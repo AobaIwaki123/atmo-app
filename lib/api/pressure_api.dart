@@ -13,8 +13,15 @@ class PressureApi {
     http.Client? client,
   }) : _client = client ?? http.Client();
 
-  Future<PressureReport> fetchLatestReport() async {
-    final uri = Uri.parse(endpoint);
+  Future<PressureReport> fetchLatestReport({double? lat, double? lon}) async {
+    Uri uri = Uri.parse(endpoint);
+    if (lat != null && lon != null) {
+      uri = uri.replace(queryParameters: {
+        'lat': lat.toStringAsFixed(4),
+        'lon': lon.toStringAsFixed(4),
+      });
+    }
+
     final response = await _client.get(
       uri,
       headers: {

@@ -14,6 +14,9 @@ extension type PressureReport(Map<String, dynamic> raw) {
   String get statusMessage => raw['status_message'] ?? '';
   bool get isCaution => status == 'caution';
 
+  double? get latitude => (raw['latitude'] as num?)?.toDouble();
+  double? get longitude => (raw['longitude'] as num?)?.toDouble();
+
   List<PressurePoint> get series =>
       (raw['series'] as List<dynamic>?)
           ?.map((e) => PressurePoint(e as Map<String, dynamic>))

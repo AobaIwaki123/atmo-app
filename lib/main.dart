@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:geolocator/geolocator.dart';
 import 'api/pressure_api.dart';
 import 'models/pressure_report.dart';
 import 'widgets/pressure_chart.dart';
@@ -41,6 +42,7 @@ class PressureMonitorPage extends StatefulWidget {
 class _PressureMonitorPageState extends State<PressureMonitorPage> {
   final PressureApi _api = PressureApi();
   late Future<PressureReport> _reportFuture;
+  bool _isUsingCurrentLocation = false;
 
   @override
   void initState() {
@@ -50,8 +52,37 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
 
   void _refresh() {
     setState(() {
-      _reportFuture = _api.fetchLatestReport();
+      _reportFuture = _fetchReportWithLocation();
     });
+  }
+
+  Future<PressureReport> _fetchReportWithLocation() async {
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.whileInUse ||
+          permission == LocationPermission.always) {
+        final position = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.medium,
+            timeLimit: Duration(seconds: 4),
+          ),
+        );
+        _isUsingCurrentLocation = true;
+        return await _api.fetchLatestReport(
+          lat: position.latitude,
+          lon: position.longitude,
+        );
+      }
+    } catch (_) {
+      // Permission denied or timeout: seamlessly fallback to default Tokyo
+    }
+
+    _isUsingCurrentLocation = false;
+    return await _api.fetchLatestReport();
   }
 
   @override
@@ -145,7 +176,9 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
 
                       // 観測メタ情報（控えめなフッター）
                       Text(
-                        '更新: ${_formatTime(report.updatedAt)}',
+                        report.latitude != null && report.longitude != null
+                            ? '観測点: ${report.latitude!.toStringAsFixed(2)}°N, ${report.longitude!.toStringAsFixed(2)}°E  •  更新: ${_formatTime(report.updatedAt)}'
+                            : '更新: ${_formatTime(report.updatedAt)}',
                         style: const TextStyle(color: Colors.white30, fontSize: 12),
                       ),
                       const SizedBox(height: 24),
@@ -164,15 +197,24 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
   Widget _buildAppleHero(PressureReport report, String message, bool isCaution) {
     return Column(
       children: [
-        // 地名
-        const Text(
-          '東京',
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.w400,
-            color: Colors.white,
-            letterSpacing: 0.5,
-          ),
+        // 地名 / ロケーション表示
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (_isUsingCurrentLocation) ...[
+              const Icon(CupertinoIcons.location_fill, size: 20, color: Colors.white70),
+              const SizedBox(width: 6),
+            ],
+            Text(
+              _isUsingCurrentLocation ? '現在地' : '東京',
+              style: const TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w400,
+                color: Colors.white,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 4),
 
