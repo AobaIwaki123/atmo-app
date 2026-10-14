@@ -48,16 +48,7 @@ class PressureChart extends StatelessWidget {
             maxX: (series.length - 1).toDouble(),
             minY: minY,
             maxY: maxY,
-            gridData: FlGridData(
-              show: true,
-              drawVerticalLine: false,
-              horizontalInterval: 2,
-              getDrawingHorizontalLine: (value) => FlLine(
-                color: Colors.white.withValues(alpha: 0.06),
-                strokeWidth: 1,
-                dashArray: [4, 4],
-              ),
-            ),
+            gridData: const FlGridData(show: false),
             titlesData: FlTitlesData(
               topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
               rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -132,7 +123,7 @@ class PressureChart extends StatelessWidget {
                 isCurved: true,
                 curveSmoothness: 0.35,
                 color: Colors.cyanAccent,
-                barWidth: 2.5,
+                barWidth: 3.2,
                 isStrokeCapRound: true,
                 dotData: FlDotData(
                   show: true,
@@ -142,9 +133,9 @@ class PressureChart extends StatelessWidget {
                   },
                   getDotPainter: (spot, percent, barData, index) {
                     return FlDotCirclePainter(
-                      radius: 5,
+                      radius: 6,
                       color: Colors.white,
-                      strokeWidth: 2,
+                      strokeWidth: 2.5,
                       strokeColor: Colors.cyanAccent,
                     );
                   },

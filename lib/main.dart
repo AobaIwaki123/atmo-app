@@ -56,9 +56,9 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
         title: const Text(
           'atmo',
           style: TextStyle(
-            fontWeight: FontWeight.w800,
-            letterSpacing: 1.5,
-            fontSize: 20,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 2.0,
+            fontSize: 22,
           ),
         ),
         centerTitle: false,
@@ -66,7 +66,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh, size: 20),
+            icon: const Icon(Icons.refresh, size: 22),
             tooltip: '更新',
             onPressed: _refresh,
           ),
@@ -109,6 +109,9 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
           final report = snapshot.data!;
           final isCaution = report.isCaution;
 
+          // バックエンド文字列に含まれる絵文字（⚠️ 等）を除去してアイコン重複を解消
+          final cleanMessage = report.statusMessage.replaceAll(RegExp(r'^[⚠️\s]+'), '');
+
           return RefreshIndicator(
             onRefresh: () async => _refresh(),
             child: SingleChildScrollView(
@@ -120,29 +123,32 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // アラートバナー
+                      // 急変警告バナー (アイコン重複を解消し、しっかりした面と左太ボーダーで整理)
                       if (isCaution) ...[
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                           decoration: BoxDecoration(
-                            color: Colors.redAccent.withValues(alpha: 0.12),
-                            border: Border.all(
-                              color: Colors.redAccent.withValues(alpha: 0.35),
-                            ),
+                            color: Colors.redAccent.withValues(alpha: 0.16),
                             borderRadius: BorderRadius.circular(12),
+                            border: const Border(
+                              left: BorderSide(color: Colors.redAccent, width: 4),
+                            ),
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.warning_amber_rounded,
-                                  color: Colors.redAccent, size: 20),
-                              const SizedBox(width: 10),
+                              const Icon(
+                                Icons.warning_amber_rounded,
+                                color: Colors.redAccent,
+                                size: 24,
+                              ),
+                              const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
-                                  report.statusMessage,
+                                  cleanMessage,
                                   style: const TextStyle(
-                                    color: Colors.redAccent,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 13,
+                                    fontSize: 14,
                                   ),
                                 ),
                               ),
@@ -152,43 +158,28 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                         const SizedBox(height: 14),
                       ],
 
-                      // 【素朴な標準機能だけで洗練させた計器カード】
+                      // 計器盤カード（細かい文字を削ぎ落とし、太めの枠線と面構成で整理）
                       _buildInstrumentCard(report),
                       const SizedBox(height: 16),
 
-                      // 48h気圧推移チャート (fl_chart)
+                      // 48h気圧推移チャート (細い枠線を全廃し、面構成で表現)
                       Container(
                         decoration: BoxDecoration(
                           color: const Color(0xFF151E2E),
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.08),
-                          ),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Padding(
                               padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    '48時間 気圧推移',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                  Text(
-                                    '動的ベジェ曲線',
-                                    style: TextStyle(
-                                      color: Colors.cyanAccent,
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                ],
+                              child: Text(
+                                '48時間 気圧推移',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                             PressureChart(series: report.series),
@@ -197,11 +188,11 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                       ),
                       const SizedBox(height: 16),
 
-                      // 最終更新
+                      // 最終更新（余計なラベルを省き、控えめに配置）
                       Center(
                         child: Text(
-                          '観測更新: ${report.updatedAt}',
-                          style: const TextStyle(color: Colors.white38, fontSize: 11),
+                          '更新: ${_formatTime(report.updatedAt)}',
+                          style: const TextStyle(color: Colors.white38, fontSize: 12),
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -216,7 +207,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
     );
   }
 
-  /// 外部依存ゼロ・Flutter標準の素朴な機能（グラデーション、枠線、スケールバー）で構築したカード
+  /// 計器カード（細かい文字を全廃し、しっかりしたボーダーと面で表現）
   Widget _buildInstrumentCard(PressureReport report) {
     final isCaution = report.isCaution;
     final diff = report.diff3h;
@@ -224,69 +215,49 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
 
     return Container(
       decoration: BoxDecoration(
-        // 微細な斜めグラデーション
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            const Color(0xFF1E293B),
-            const Color(0xFF111827),
+            Color(0xFF1E293B),
+            Color(0xFF111827),
           ],
         ),
-        borderRadius: BorderRadius.circular(18),
-        // 状態に応じた繊細な境界線
+        borderRadius: BorderRadius.circular(20),
+        // 細い線をやめ、2.0pxのしっかりしたアクセント枠線を採用
         border: Border.all(
-          color: isCaution
-              ? Colors.redAccent.withValues(alpha: 0.4)
-              : Colors.cyanAccent.withValues(alpha: 0.2),
-          width: 1.2,
+          color: isCaution ? Colors.redAccent : Colors.cyanAccent.withValues(alpha: 0.6),
+          width: 2.0,
         ),
       ),
       padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 上段: 観測地点 ＋ 状態バッジ
+          // 上段: 地点名 ＋ 状態バッジ
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.location_on_outlined,
-                    size: 15,
-                    color: Colors.white.withValues(alpha: 0.6),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '東京 観測地点',
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.7),
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
+              const Text(
+                '東京',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                 decoration: BoxDecoration(
-                  color: isCaution
-                      ? Colors.redAccent.withValues(alpha: 0.15)
-                      : Colors.cyanAccent.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: isCaution
-                        ? Colors.redAccent.withValues(alpha: 0.4)
-                        : Colors.cyanAccent.withValues(alpha: 0.3),
-                  ),
+                  color: isCaution ? Colors.redAccent : Colors.cyanAccent.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
-                  isCaution ? '急変警戒' : '大気圧安定',
+                  isCaution ? '急変警戒' : '安定',
                   style: TextStyle(
-                    color: isCaution ? Colors.redAccent : Colors.cyanAccent,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
+                    color: isCaution ? Colors.white : Colors.cyanAccent,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ),
@@ -294,7 +265,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
           ),
           const SizedBox(height: 16),
 
-          // 中段: メイン気圧値 ＋ 3h変動トレンド
+          // 中段: メイン気圧値 ＋ 変動値
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -307,109 +278,77 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                   Text(
                     report.currentPressure.toStringAsFixed(1),
                     style: const TextStyle(
-                      fontSize: 54,
+                      fontSize: 56,
                       fontWeight: FontWeight.w900,
                       letterSpacing: -1.5,
                       color: Colors.white,
                     ),
                   ),
                   const SizedBox(width: 6),
-                  Text(
+                  const Text(
                     'hPa',
                     style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white.withValues(alpha: 0.5),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white54,
                     ),
                   ),
                 ],
               ),
 
-              // 変動トレンド指標
+              // 変動値（細い枠線を無くし、面で力強く表示）
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                  color: diff.abs() >= 2.0
+                      ? Colors.orangeAccent.withValues(alpha: 0.2)
+                      : Colors.white.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      '過去3時間の変動',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.white.withValues(alpha: 0.5),
-                      ),
+                    Icon(
+                      isUp ? Icons.trending_up : Icons.trending_down,
+                      size: 22,
+                      color: diff.abs() >= 2.0 ? Colors.orangeAccent : Colors.white,
                     ),
-                    const SizedBox(height: 2),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          isUp ? Icons.trending_up : Icons.trending_down,
-                          size: 18,
-                          color: diff.abs() >= 2.0
-                              ? Colors.orangeAccent
-                              : Colors.white70,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${isUp ? '+' : ''}${diff.toStringAsFixed(1)} hPa',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: diff.abs() >= 2.0
-                                ? Colors.orangeAccent
-                                : Colors.white,
-                          ),
-                        ),
-                      ],
+                    const SizedBox(width: 6),
+                    Text(
+                      '${isUp ? '+' : ''}${diff.toStringAsFixed(1)} / 3h',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: diff.abs() >= 2.0 ? Colors.orangeAccent : Colors.white,
+                      ),
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 22),
 
-          // 下段: 気圧スケールバー（990 〜 1030 hPa 内での現在位置）
+          // 下段: 太く見やすくなった気圧スケールバー
           _buildPressureScaleBar(report.currentPressure),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
 
-          // 最下段: 気温 & 状態インフォ
+          // 最下段: 気温のみシンプルに表示（細かい注釈は全廃）
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text(
-                '低気圧 (頭痛注意)',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: Colors.white.withValues(alpha: 0.4),
-                ),
+              Icon(
+                Icons.thermostat,
+                size: 16,
+                color: Colors.white.withValues(alpha: 0.6),
               ),
-              Row(
-                children: [
-                  Icon(
-                    Icons.thermostat,
-                    size: 14,
-                    color: Colors.white.withValues(alpha: 0.5),
-                  ),
-                  Text(
-                    ' 気温 ${report.temperature.toStringAsFixed(0)}°C',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.white.withValues(alpha: 0.6),
-                    ),
-                  ),
-                ],
-              ),
+              const SizedBox(width: 4),
               Text(
-                '高気圧 (急変注意)',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: Colors.white.withValues(alpha: 0.4),
+                '${report.temperature.toStringAsFixed(0)}°C',
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white70,
                 ),
               ),
             ],
@@ -419,7 +358,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
     );
   }
 
-  /// 990〜1030 hPa の範囲で現在値の位置を示す素朴な水平スケールバー（外部依存ゼロ）
+  /// 990〜1030 hPa スケールバー（高さを8pxに太くし、ドットを16pxに拡大）
   Widget _buildPressureScaleBar(double currentPressure) {
     const minP = 990.0;
     const maxP = 1030.0;
@@ -429,42 +368,42 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final totalWidth = constraints.maxWidth;
-        final indicatorX = (totalWidth * ratio).clamp(6.0, totalWidth - 6.0);
+        final indicatorX = (totalWidth * ratio).clamp(8.0, totalWidth - 8.0);
 
         return Stack(
           alignment: Alignment.centerLeft,
           children: [
-            // 背景スケールバー（低気圧: 赤系 ➔ 安定: 青/緑 ➔ 高気圧: オレンジ/赤）
+            // 太めのスケールバー (高さ8px)
             Container(
-              height: 6,
+              height: 8,
               width: double.infinity,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(3),
-                gradient: LinearGradient(
+                borderRadius: BorderRadius.circular(4),
+                gradient: const LinearGradient(
                   colors: [
-                    Colors.redAccent.withValues(alpha: 0.7),
-                    Colors.cyanAccent.withValues(alpha: 0.6),
-                    Colors.blueAccent.withValues(alpha: 0.6),
-                    Colors.orangeAccent.withValues(alpha: 0.7),
+                    Colors.redAccent,
+                    Colors.cyanAccent,
+                    Colors.blueAccent,
+                    Colors.orangeAccent,
                   ],
                 ),
               ),
             ),
-            // 現在位置のピンマーカー
+            // 大きめのピンマーカー (16px)
             Positioned(
-              left: indicatorX - 6,
+              left: indicatorX - 8,
               child: Container(
-                width: 12,
-                height: 12,
+                width: 16,
+                height: 16,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFF0B1120), width: 2),
+                  border: Border.all(color: const Color(0xFF0B1120), width: 3),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.cyanAccent.withValues(alpha: 0.5),
-                      blurRadius: 6,
-                      spreadRadius: 1,
+                      color: Colors.black.withValues(alpha: 0.5),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
@@ -474,5 +413,15 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
         );
       },
     );
+  }
+
+  String _formatTime(String raw) {
+    if (raw.isEmpty) return '';
+    try {
+      final dt = DateTime.parse(raw).toLocal();
+      return '${dt.month}/${dt.day} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+    } catch (_) {
+      return raw;
+    }
   }
 }
