@@ -41,3 +41,12 @@ deps:
 # キャッシュ・成果物クリーン
 clean:
 	flutter clean
+
+# バックエンド (atmo) へ Web ビルドを同期
+sync-backend: build
+	@echo "Syncing build/web into ../atmo/web..."
+	rm -rf ../atmo/web
+	cp -r build/web ../atmo/web
+	find ../atmo/web -name "*.symbols" -delete
+	@echo "Sync complete!"
+
