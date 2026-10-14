@@ -1,14 +1,49 @@
-# Flutter / Dart
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains codespaces configuration and should be included
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/flavor.json
+
+# Visual Studio Code related
+.classpath
+.project
+.settings/
+.factorypath
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
 .dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
 .packages
-build/
 .pub-cache/
 .pub/
+/build/
 
-# IDE
-.idea/
-.vscode/
-*.iml
+# Symbol processing related
+app.*.symbols
+app.*.map.json
 
-# OS
-.DS_Store
+# Exceptions to above rules.
+!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
