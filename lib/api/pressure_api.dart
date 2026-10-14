@@ -27,6 +27,6 @@ class PressureApi {
     }
 
     final decoded = json.decode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-    return PressureReport.fromJson(decoded);
+    return PressureReport(decoded);
   }
 }

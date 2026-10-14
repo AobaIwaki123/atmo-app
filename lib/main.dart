@@ -101,7 +101,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
           }
 
           final report = snapshot.data!;
-          final isCaution = report.status == 'caution';
+          final isCaution = report.isCaution;
 
           return RefreshIndicator(
             onRefresh: () async => _refresh(),
