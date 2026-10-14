@@ -19,20 +19,21 @@ Built with **Flutter** (supporting Web, iOS, Android, and macOS) connecting to t
 ```
 
 - **Minimalist & Clean Codebase**: Kept lightweight (1-2 main UI files) without bloated dependencies.
-- **Fast Local Feedback**: Run and debug instantly in Chrome (`flutter run -d chrome`) without heavy mobile emulators.
+- **Fast Local Feedback**: Run and debug instantly in Chrome (`make dev`) without heavy mobile emulators.
 - **Dark Mode & Data Visualization**: Smooth atmospheric pressure curves and real-time headache risk indicators.
 
 ## Implementation Roadmap
 
-### Phase 1: Planning & API Integration (Current)
+### Phase 1: Planning & API Integration
 - [x] Repository initialized.
-- [ ] Connect with `atmo` backend API (`GET /api/v1/pressure.json`).
-- [ ] Display current atmospheric pressure, 3-hour delta ($\Delta P$), and caution badge.
+- [x] Connect with `atmo` backend API (`GET /api/v1/pressure`).
+- [x] Display current atmospheric pressure, 3-hour delta ($\Delta P$), and caution badge.
 
 ### Phase 2: Web Preview & UI Prototyping
-- [ ] Setup Flutter Web project structure.
-- [ ] Implement responsive card-based layout (optimized for mobile preview in browser).
-- [ ] Render 48-hour pressure chart using `fl_chart` or direct image render.
+- [x] Setup Flutter Web project structure.
+- [x] Implement responsive card-based layout (optimized for mobile preview in browser).
+- [x] Render 48-hour pressure chart using `fl_chart`.
+- [x] UI component library evaluation & architectural decision ([docs/ui-library-evaluation.md](docs/ui-library-evaluation.md)).
 
 ### Phase 3: Mobile & Native Polish
 - [ ] Build & test on iOS Simulator / Physical iPhone.
