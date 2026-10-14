@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'api/pressure_api.dart';
 import 'models/pressure_report.dart';
 import 'widgets/pressure_chart.dart';
@@ -18,8 +19,12 @@ class AtmoApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
-        colorSchemeSeed: Colors.cyan,
-        scaffoldBackgroundColor: const Color(0xFF0B1120), // 深いDark Slate
+        // Apple HIG: 深いミッドナイトネイビー
+        scaffoldBackgroundColor: const Color(0xFF060913),
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFF38BDF8),
+          surface: Color(0xFF131B2E),
+        ),
       ),
       home: const PressureMonitorPage(),
     );
@@ -52,21 +57,23 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: const Text(
           'atmo',
           style: TextStyle(
-            fontWeight: FontWeight.w900,
-            letterSpacing: 2.0,
-            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            fontSize: 17,
+            letterSpacing: 0.5,
+            color: Colors.white70,
           ),
         ),
-        centerTitle: false,
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh, size: 22),
+            icon: const Icon(CupertinoIcons.arrow_clockwise, size: 20, color: Colors.white70),
             tooltip: '更新',
             onPressed: _refresh,
           ),
@@ -77,7 +84,9 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
         future: _reportFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CupertinoActivityIndicator(radius: 14, color: Colors.white70),
+            );
           }
 
           if (snapshot.hasError) {
@@ -87,7 +96,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.error_outline, size: 48, color: Colors.redAccent),
+                    const Icon(CupertinoIcons.exclamationmark_triangle, size: 44, color: Color(0xFFF87171)),
                     const SizedBox(height: 16),
                     Text(
                       'データ取得エラー\n${snapshot.error}',
@@ -95,10 +104,10 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                       style: const TextStyle(color: Colors.white70),
                     ),
                     const SizedBox(height: 16),
-                    ElevatedButton.icon(
+                    CupertinoButton.filled(
                       onPressed: _refresh,
-                      icon: const Icon(Icons.refresh),
-                      label: const Text('再試行'),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      child: const Text('再試行', style: TextStyle(fontSize: 14)),
                     ),
                   ],
                 ),
@@ -108,92 +117,36 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
 
           final report = snapshot.data!;
           final isCaution = report.isCaution;
-
-          // バックエンド文字列に含まれる絵文字（⚠️ 等）を除去してアイコン重複を解消
           final cleanMessage = report.statusMessage.replaceAll(RegExp(r'^[⚠️\s]+'), '');
 
           return RefreshIndicator(
             onRefresh: () async => _refresh(),
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 580),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // 急変警告バナー (アイコン重複を解消し、しっかりした面と左太ボーダーで整理)
-                      if (isCaution) ...[
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                          decoration: BoxDecoration(
-                            color: Colors.redAccent.withValues(alpha: 0.16),
-                            borderRadius: BorderRadius.circular(12),
-                            border: const Border(
-                              left: BorderSide(color: Colors.redAccent, width: 4),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.warning_amber_rounded,
-                                color: Colors.redAccent,
-                                size: 24,
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  cleanMessage,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 14),
-                      ],
+                      const SizedBox(height: kToolbarHeight + 10),
 
-                      // 計器盤カード（細かい文字を削ぎ落とし、太めの枠線と面構成で整理）
-                      _buildInstrumentCard(report),
+                      // 【Apple HIG ヒーローセクション: 画面全体を支配する巨大な中央タイポグラフィ】
+                      _buildAppleHero(report, cleanMessage, isCaution),
+                      const SizedBox(height: 36),
+
+                      // 【Apple Weather 1: 48時間気圧推移モジュール】
+                      _buildAppleChartModule(report),
                       const SizedBox(height: 16),
 
-                      // 48h気圧推移チャート (細い枠線を全廃し、面構成で表現)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF151E2E),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                              child: Text(
-                                '48時間 気圧推移',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                            PressureChart(series: report.series),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 16),
+                      // 【Apple Weather 2: 2列スクエア・モジュールグリッド】
+                      _buildAppleMetricGrid(report),
+                      const SizedBox(height: 24),
 
-                      // 最終更新（余計なラベルを省き、控えめに配置）
-                      Center(
-                        child: Text(
-                          '更新: ${_formatTime(report.updatedAt)}',
-                          style: const TextStyle(color: Colors.white38, fontSize: 12),
-                        ),
+                      // 観測メタ情報（控えめなフッター）
+                      Text(
+                        '更新: ${_formatTime(report.updatedAt)}',
+                        style: const TextStyle(color: Colors.white30, fontSize: 12),
                       ),
                       const SizedBox(height: 24),
                     ],
@@ -207,211 +160,245 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
     );
   }
 
-  /// 計器カード（細かい文字を全廃し、しっかりしたボーダーと面で表現）
-  Widget _buildInstrumentCard(PressureReport report) {
-    final isCaution = report.isCaution;
-    final diff = report.diff3h;
-    final isUp = diff >= 0;
+  /// Apple Weather 純正風ヒーローセクション
+  Widget _buildAppleHero(PressureReport report, String message, bool isCaution) {
+    return Column(
+      children: [
+        // 地名
+        const Text(
+          '東京',
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w400,
+            color: Colors.white,
+            letterSpacing: 0.5,
+          ),
+        ),
+        const SizedBox(height: 4),
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF1E293B),
-            Color(0xFF111827),
+        // 超大型気圧タイポグラフィ (88pt, 薄いウェイト)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Text(
+              report.currentPressure.toStringAsFixed(1),
+              style: const TextStyle(
+                fontSize: 88,
+                fontWeight: FontWeight.w200,
+                color: Colors.white,
+                letterSpacing: -3.0,
+                height: 1.0,
+              ),
+            ),
+            const SizedBox(width: 6),
+            const Text(
+              'hPa',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w300,
+                color: Colors.white54,
+              ),
+            ),
           ],
         ),
-        borderRadius: BorderRadius.circular(20),
-        // 細い線をやめ、2.0pxのしっかりしたアクセント枠線を採用
-        border: Border.all(
-          color: isCaution ? Colors.redAccent : Colors.cyanAccent.withValues(alpha: 0.6),
-          width: 2.0,
+        const SizedBox(height: 8),
+
+        // 状態サマリー（上品な色合い）
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+          decoration: BoxDecoration(
+            color: isCaution
+                ? const Color(0xFFEF4444).withValues(alpha: 0.2)
+                : Colors.white.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                isCaution ? CupertinoIcons.exclamationmark_circle_fill : CupertinoIcons.check_mark_circled_solid,
+                size: 15,
+                color: isCaution ? const Color(0xFFF87171) : const Color(0xFF34D399),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                isCaution ? message : '気圧は平常・安定しています',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: isCaution ? const Color(0xFFFCA5A5) : const Color(0xFF6EE7B7),
+                ),
+              ),
+            ],
+          ),
         ),
+      ],
+    );
+  }
+
+  /// Apple Weather 風の半透明チャートモジュール
+  Widget _buildAppleChartModule(PressureReport report) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.06), // 半透明マテリアル
+        borderRadius: BorderRadius.circular(22), // iOS特有のゆったりした角丸
       ),
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.fromLTRB(18, 16, 18, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 上段: 地点名 ＋ 状態バッジ
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                '東京',
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                decoration: BoxDecoration(
-                  color: isCaution ? Colors.redAccent : Colors.cyanAccent.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Text(
-                  isCaution ? '急変警戒' : '安定',
-                  style: TextStyle(
-                    color: isCaution ? Colors.white : Colors.cyanAccent,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          // 中段: メイン気圧値 ＋ 変動値
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // 気圧値
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  Text(
-                    report.currentPressure.toStringAsFixed(1),
-                    style: const TextStyle(
-                      fontSize: 56,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: -1.5,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  const Text(
-                    'hPa',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white54,
-                    ),
-                  ),
-                ],
-              ),
-
-              // 変動値（細い枠線を無くし、面で力強く表示）
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: diff.abs() >= 2.0
-                      ? Colors.orangeAccent.withValues(alpha: 0.2)
-                      : Colors.white.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      isUp ? Icons.trending_up : Icons.trending_down,
-                      size: 22,
-                      color: diff.abs() >= 2.0 ? Colors.orangeAccent : Colors.white,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      '${isUp ? '+' : ''}${diff.toStringAsFixed(1)} / 3h',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                        color: diff.abs() >= 2.0 ? Colors.orangeAccent : Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 22),
-
-          // 下段: 太く見やすくなった気圧スケールバー
-          _buildPressureScaleBar(report.currentPressure),
-          const SizedBox(height: 14),
-
-          // 最下段: 気温のみシンプルに表示（細かい注釈は全廃）
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Icon(
-                Icons.thermostat,
-                size: 16,
-                color: Colors.white.withValues(alpha: 0.6),
+                CupertinoIcons.chart_bar_alt_fill,
+                size: 14,
+                color: Colors.white.withValues(alpha: 0.5),
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: 6),
               Text(
-                '${report.temperature.toStringAsFixed(0)}°C',
-                style: const TextStyle(
-                  fontSize: 13,
+                '48時間 気圧推移',
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.6),
+                  fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white70,
+                  letterSpacing: 0.5,
                 ),
               ),
             ],
           ),
+          const SizedBox(height: 6),
+          PressureChart(series: report.series),
         ],
       ),
     );
   }
 
-  /// 990〜1030 hPa スケールバー（高さを8pxに太くし、ドットを16pxに拡大）
-  Widget _buildPressureScaleBar(double currentPressure) {
-    const minP = 990.0;
-    const maxP = 1030.0;
-    final clamped = currentPressure.clamp(minP, maxP);
-    final ratio = (clamped - minP) / (maxP - minP);
+  /// Apple Weather 特有の2列スクエア・モジュールグリッド
+  Widget _buildAppleMetricGrid(PressureReport report) {
+    final diff = report.diff3h;
+    final isUp = diff >= 0;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final totalWidth = constraints.maxWidth;
-        final indicatorX = (totalWidth * ratio).clamp(8.0, totalWidth - 8.0);
-
-        return Stack(
-          alignment: Alignment.centerLeft,
-          children: [
-            // 太めのスケールバー (高さ8px)
-            Container(
-              height: 8,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                gradient: const LinearGradient(
-                  colors: [
-                    Colors.redAccent,
-                    Colors.cyanAccent,
-                    Colors.blueAccent,
-                    Colors.orangeAccent,
-                  ],
-                ),
-              ),
+    return Row(
+      children: [
+        // 左タイル: 3時間変動
+        Expanded(
+          child: Container(
+            height: 130,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.06),
+              borderRadius: BorderRadius.circular(22),
             ),
-            // 大きめのピンマーカー (16px)
-            Positioned(
-              left: indicatorX - 8,
-              child: Container(
-                width: 16,
-                height: 16,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFF0B1120), width: 3),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.5),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      CupertinoIcons.arrow_up_down,
+                      size: 13,
+                      color: Colors.white.withValues(alpha: 0.5),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      '3時間変動',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.6),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
-              ),
+                Text(
+                  '${isUp ? '+' : ''}${diff.toStringAsFixed(1)}',
+                  style: const TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.white,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                Text(
+                  diff.abs() >= 2.0 ? '急変注意' : '安定推移',
+                  style: TextStyle(
+                    color: diff.abs() >= 2.0 ? const Color(0xFFFBBF24) : Colors.white54,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
-          ],
-        );
-      },
+          ),
+        ),
+        const SizedBox(width: 14),
+
+        // 右タイル: 気温
+        Expanded(
+          child: Container(
+            height: 130,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.06),
+              borderRadius: BorderRadius.circular(22),
+            ),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      CupertinoIcons.thermometer,
+                      size: 13,
+                      color: Colors.white.withValues(alpha: 0.5),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      '気温',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.6),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    Text(
+                      report.temperature.toStringAsFixed(0),
+                      style: const TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.white,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    const Text(
+                      '°C',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.white54,
+                      ),
+                    ),
+                  ],
+                ),
+                const Text(
+                  '現在の観測値',
+                  style: TextStyle(color: Colors.white54, fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -419,7 +406,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
     if (raw.isEmpty) return '';
     try {
       final dt = DateTime.parse(raw).toLocal();
-      return '${dt.month}/${dt.day} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+      return '${dt.month}月${dt.day}日 ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
     } catch (_) {
       return raw;
     }
