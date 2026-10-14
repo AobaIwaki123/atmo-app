@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'api/pressure_api.dart';
 import 'models/pressure_report.dart';
+import 'widgets/pressure_chart.dart';
 
 void main() {
   runApp(const AtmoApp());
@@ -200,7 +201,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                     ),
                     const SizedBox(height: 16),
 
-                    // 48h気圧推移チャート (バックエンド生成PNG)
+                    // 48h気圧推移チャート (fl_chart 動的ベジェ曲線)
                     Card(
                       color: const Color(0xFF1E293B),
                       shape: RoundedRectangleBorder(
@@ -212,38 +213,26 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Padding(
-                            padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-                            child: Text(
-                              '48時間 気圧推移',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ),
-                          Image.network(
-                            'https://atmo.aooba.net/api/v1/chart.png?t=${DateTime.now().millisecondsSinceEpoch}',
-                            fit: BoxFit.contain,
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return const SizedBox(
-                                height: 200,
-                                child: Center(child: CircularProgressIndicator()),
-                              );
-                            },
-                            errorBuilder: (context, error, stackTrace) {
-                              return const SizedBox(
-                                height: 160,
-                                child: Center(
-                                  child: Text(
-                                    'チャートの読み込みに失敗しました',
-                                    style: TextStyle(color: Colors.white38),
+                            padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '48時間 気圧推移',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
                                   ),
                                 ),
-                              );
-                            },
+                                Text(
+                                  'fl_chart (動的曲線)',
+                                  style: TextStyle(color: Colors.cyanAccent, fontSize: 11),
+                                ),
+                              ],
+                            ),
                           ),
+                          PressureChart(series: report.series),
                         ],
                       ),
                     ),
