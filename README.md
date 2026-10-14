@@ -39,15 +39,22 @@ Built with **Flutter** (supporting Web, iOS, Android, and macOS) connecting to t
 - [ ] Offline caching (local state persistence).
 - [ ] Lock screen / Home screen widget integration.
 
-## Getting Started (When ready to build)
+## Getting Started
 
 ```bash
-# 1. Install Flutter dependencies
-flutter pub get
+# 1. 依存パッケージの取得
+make deps
 
-# 2. Run in Chrome for fast preview
-flutter run -d chrome
+# 2. Chrome で起動（ホットリロード有効）
+make dev
 
-# 3. Build for Web
-flutter build web
+# 3. macOS ネイティブで起動
+make dev-macos
+
+# 4. テスト & リント
+make test
+make lint
+
+# 5. Web ビルド
+make build
 ```
