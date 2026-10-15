@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">atmo</string>
+    <string name="small_widget_description">現在地の気圧とスパークライン推移（正方形）</string>
+    <string name="medium_widget_description">現在地の気圧と24時間ワイド気圧推移グラフ</string>
+</resources>

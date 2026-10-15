@@ -7,7 +7,9 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Atmo App</string>
+	<string>atmo</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>現在地の気圧および気象病アラートを表示するために位置情報を利用します。</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

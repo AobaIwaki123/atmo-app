@@ -5,8 +5,11 @@ import 'api/pressure_api.dart';
 import 'models/pressure_report.dart';
 import 'widgets/pressure_chart.dart';
 import 'widgets/atmo_widget_preview.dart';
+import 'services/widget_update_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await WidgetUpdateService.initialize();
   runApp(const AtmoApp());
 }
 
@@ -58,6 +61,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
   }
 
   Future<PressureReport> _fetchReportWithLocation() async {
+    PressureReport report;
     try {
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
@@ -73,17 +77,23 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
           ),
         );
         _isUsingCurrentLocation = true;
-        return await _api.fetchLatestReport(
+        report = await _api.fetchLatestReport(
           lat: position.latitude,
           lon: position.longitude,
         );
+        // ignore: unawaited_futures
+        WidgetUpdateService.updateWidgets(report);
+        return report;
       }
     } catch (_) {
       // Permission denied or timeout: seamlessly fallback to default Tokyo
     }
 
     _isUsingCurrentLocation = false;
-    return await _api.fetchLatestReport();
+    report = await _api.fetchLatestReport();
+    // ignore: unawaited_futures
+    WidgetUpdateService.updateWidgets(report);
+    return report;
   }
 
   @override
