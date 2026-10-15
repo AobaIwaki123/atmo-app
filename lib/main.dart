@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'api/pressure_api.dart';
 import 'models/pressure_report.dart';
 import 'widgets/pressure_chart.dart';
+import 'widgets/atmo_widget_preview.dart';
 
 void main() {
   runApp(const AtmoApp());
@@ -177,11 +178,15 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                       // 観測メタ情報（控えめなフッター）
                       Text(
                         report.latitude != null && report.longitude != null
-                            ? '観測点: ${report.latitude!.toStringAsFixed(2)}°N, ${report.longitude!.toStringAsFixed(2)}°E  •  更新: ${_formatTime(report.updatedAt)}'
+                            ? '観測点: ${report.locationName} (${report.latitude!.toStringAsFixed(2)}°N, ${report.longitude!.toStringAsFixed(2)}°E)  •  更新: ${_formatTime(report.updatedAt)}'
                             : '更新: ${_formatTime(report.updatedAt)}',
                         style: const TextStyle(color: Colors.white30, fontSize: 12),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 36),
+
+                      // 【ホーム画面ウィジェット・プレビュー】
+                      _buildWidgetPreviewSection(report),
+                      const SizedBox(height: 36),
                     ],
                   ),
                 ),
@@ -193,8 +198,58 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
     );
   }
 
+  /// ウィジェットプレビューセクション (Small: 158×158, Medium: 338×158)
+  Widget _buildWidgetPreviewSection(PressureReport report) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.03),
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.06), width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: const [
+              Icon(CupertinoIcons.square_grid_2x2, size: 15, color: Colors.white54),
+              SizedBox(width: 8),
+              Text(
+                'ホーム画面ウィジェット (プレビュー)',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white70,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Center(
+            child: Wrap(
+              spacing: 16,
+              runSpacing: 16,
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                AtmoSmallWidgetView(report: report),
+                AtmoMediumWidgetView(report: report),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   /// Apple Weather 純正風ヒーローセクション
   Widget _buildAppleHero(PressureReport report, String message, bool isCaution) {
+    final displayName = _isUsingCurrentLocation
+        ? (report.locationName.isNotEmpty ? report.locationName : '現在地')
+        : (report.locationName.isNotEmpty ? report.locationName : '東京');
+
     return Column(
       children: [
         // 地名 / ロケーション表示
@@ -206,7 +261,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
               const SizedBox(width: 6),
             ],
             Text(
-              _isUsingCurrentLocation ? '現在地' : '東京',
+              displayName,
               style: const TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w400,
