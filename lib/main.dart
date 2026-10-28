@@ -117,10 +117,22 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
-          IconButton(
-            icon: const Icon(CupertinoIcons.info_circle, size: 20, color: Colors.white70),
-            tooltip: 'プライバシーと設計方針',
-            onPressed: () => _showPrivacyInfoModal(context),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: OutlinedButton.icon(
+              onPressed: () => _showPrivacyInfoModal(context),
+              icon: const Icon(CupertinoIcons.shield_fill, size: 14, color: Colors.cyanAccent),
+              label: const Text(
+                '安心設計',
+                style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+              ),
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: Colors.cyanAccent.withValues(alpha: 0.4)),
+                backgroundColor: Colors.cyan.withValues(alpha: 0.12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+              ),
+            ),
           ),
           IconButton(
             icon: const Icon(CupertinoIcons.arrow_clockwise, size: 20, color: Colors.white70),
@@ -193,31 +205,61 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                       _buildAppleMetricGrid(report),
                       const SizedBox(height: 24),
 
-                      // 観測メタ情報（控えめなフッター、タップでプライバシー詳細）
-                      InkWell(
-                        onTap: () => _showPrivacyInfoModal(context),
-                        borderRadius: BorderRadius.circular(6),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                report.latitude != null && report.longitude != null
-                                    ? '観測エリア: ${report.locationName} (${report.latitude!.toStringAsFixed(1)}°N, ${report.longitude!.toStringAsFixed(1)}°E)'
-                                    : '観測エリア: ${report.locationName}',
-                                style: const TextStyle(color: Colors.white30, fontSize: 12),
-                              ),
-                              const SizedBox(width: 4),
-                              const Icon(CupertinoIcons.info_circle, size: 12, color: Colors.white30),
-                              const Text('  •  ', style: TextStyle(color: Colors.white30, fontSize: 12)),
-                              Text(
-                                '更新: ${_formatTime(report.updatedAt)}',
-                                style: const TextStyle(color: Colors.white30, fontSize: 12),
-                              ),
-                            ],
+                      // 観測メタ情報（押せることが直感的に伝わる安心設計バッジ）
+                      MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: GestureDetector(
+                          onTap: () => _showPrivacyInfoModal(context),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF1E293B).withValues(alpha: 0.8),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.cyanAccent.withValues(alpha: 0.35)),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(CupertinoIcons.shield_fill, size: 14, color: Colors.cyanAccent),
+                                const SizedBox(width: 8),
+                                Text(
+                                  report.latitude != null && report.longitude != null
+                                      ? '観測エリア: ${report.locationName} (${report.latitude!.toStringAsFixed(1)}°N, ${report.longitude!.toStringAsFixed(1)}°E)'
+                                      : '観測エリア: ${report.locationName}',
+                                  style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+                                ),
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.cyanAccent.withValues(alpha: 0.2),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        '安心設計',
+                                        style: TextStyle(
+                                          color: Colors.cyanAccent,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(width: 2),
+                                      Icon(CupertinoIcons.chevron_right, size: 10, color: Colors.cyanAccent),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '更新: ${_formatTime(report.updatedAt)}',
+                        style: const TextStyle(color: Colors.white30, fontSize: 11),
                       ),
                       const SizedBox(height: 36),
 
@@ -589,7 +631,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'プライバシー保護の仕組み',
+                            'プライバシー安心設計の仕組み',
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
@@ -598,7 +640,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                           ),
                           SizedBox(height: 2),
                           Text(
-                            'ゼロ・インプットとピンポイント特定排除の両立',
+                            'ゼロ・インプットと高精度位置情報アクセスの完全排除',
                             style: TextStyle(fontSize: 12, color: Colors.white54),
                           ),
                         ],
@@ -609,30 +651,37 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                 const SizedBox(height: 20),
                 _buildPrivacyFeatureRow(
                   icon: CupertinoIcons.location_slash,
-                  title: 'ピンポイントな居場所は一切取得しません',
+                  title: '高精度な現在地（GPS）は一切取得しません',
                   description:
-                      'iOSの仕組みにより、OSレベルで「おおよその位置情報（数キロ四方）」しかアプリに渡されません。生の高精度GPSがアプリに流入することを物理的に遮断しています。',
+                      'Webブラウザおよびアプリの双方で、自宅や職場が特定できる高精度GPSは要求・利用しません。ブラウザの低精度測位（Wi-Fi/IPベース）やOSのおおよその位置情報設定により、生の高精度座標を物理的に遮断しています。',
                 ),
                 const SizedBox(height: 14),
                 _buildPrivacyFeatureRow(
                   icon: CupertinoIcons.square_grid_2x2,
                   title: '約10km四方の固定メッシュにスナップ',
                   description:
-                      '気圧は大気現象であり、ピンポイント座標は不要です。端末内で座標を0.1度単位（約10km四方）に丸めてから気圧データを照会します。',
+                      '気圧は大気規模の現象であり、ピンポイント座標は不要です。端末・ブラウザ内で座標を0.1度単位（約10km四方）に丸めてから気圧データを照会します。',
+                ),
+                const SizedBox(height: 14),
+                _buildPrivacyFeatureRow(
+                  icon: CupertinoIcons.map_pin_ellipse,
+                  title: '都道府県単位での広域エリア表示',
+                  description:
+                      '細かい市区町村単位ではなく「東京都」「神奈川県」など都道府県単位で大まかに表示するため、外出先や自宅周辺の生活圏プライバシーが保たれます。',
                 ),
                 const SizedBox(height: 14),
                 _buildPrivacyFeatureRow(
                   icon: CupertinoIcons.lock_shield,
                   title: '悪意ある開発者であっても特定不可能',
                   description:
-                      '通信ログやサーバーを監視・傍受しても、手に入るのは広域メッシュの代表点のみです。自宅や職場の建物を特定することは原理的に成立しません。',
+                      '通信ログやサーバーを傍受・監視しても、手に入るのは10kmメッシュの広域代表点のみです。自宅や職場の建物を特定することは構造上不可能です。',
                 ),
                 const SizedBox(height: 14),
                 _buildPrivacyFeatureRow(
                   icon: CupertinoIcons.checkmark_seal,
                   title: '手動入力の手間はゼロ',
                   description:
-                      '市区町村を手動検索・切り替える面倒な操作なく、移動先でも自動で安全に現在地周辺の気圧をご確認いただけます。',
+                      '市区町村を手動検索・選択する面倒な操作なく、移動先でも自動で安心して周辺エリアの気圧をご確認いただけます。',
                 ),
                 const SizedBox(height: 24),
                 SizedBox(
