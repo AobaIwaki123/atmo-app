@@ -5,9 +5,11 @@
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
 migrate_working_dir/
 
 # IntelliJ related
@@ -15,6 +17,11 @@ migrate_working_dir/
 *.ipr
 *.iws
 .idea/
+
+# Local worklogs (ignored from git)
+worklogs/
+.worklogs/
+
 
 # The .vscode folder contains codespaces configuration and should be included
 .vscode/*
