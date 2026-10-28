@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/pressure_report.dart';
+import '../utils/coarse_location.dart';
 
 class PressureApi {
   static const String defaultEndpoint = 'https://atmo.aooba.net/api/v1/pressure';
@@ -16,9 +17,11 @@ class PressureApi {
   Future<PressureReport> fetchLatestReport({double? lat, double? lon}) async {
     Uri uri = Uri.parse(endpoint);
     if (lat != null && lon != null) {
+      final coarseLat = CoarseLocation.snap(lat);
+      final coarseLon = CoarseLocation.snap(lon);
       uri = uri.replace(queryParameters: {
-        'lat': lat.toStringAsFixed(4),
-        'lon': lon.toStringAsFixed(4),
+        'lat': coarseLat.toStringAsFixed(1),
+        'lon': coarseLon.toStringAsFixed(1),
       });
     }
 
