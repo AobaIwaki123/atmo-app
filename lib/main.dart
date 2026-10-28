@@ -285,7 +285,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
   Widget _buildAppleHero(PressureReport report, String message, bool isCaution) {
     final displayName = _isUsingCurrentLocation
         ? (report.locationName.isNotEmpty ? report.locationName : '現在地')
-        : (report.locationName.isNotEmpty ? report.locationName : '東京');
+        : (report.locationName.isNotEmpty ? report.locationName : '東京都');
 
     return Column(
       children: [
