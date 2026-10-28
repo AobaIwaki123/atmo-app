@@ -28,8 +28,10 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSLocationDefaultAccuracyReduced</key>
+	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>現在地の気圧および気象病アラートを表示するために位置情報を利用します。</string>
+	<string>現在地周辺の気圧推移および気象病アラートを表示するためにおおよその位置情報のみを利用します（ピンポイントな現在地は取得しません）。</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

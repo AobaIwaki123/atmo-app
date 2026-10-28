@@ -6,6 +6,7 @@ import 'models/pressure_report.dart';
 import 'widgets/pressure_chart.dart';
 import 'widgets/atmo_widget_preview.dart';
 import 'services/widget_update_service.dart';
+import 'utils/coarse_location.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,14 +73,16 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
           permission == LocationPermission.always) {
         final position = await Geolocator.getCurrentPosition(
           locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.medium,
+            accuracy: LocationAccuracy.reduced,
             timeLimit: Duration(seconds: 4),
           ),
         );
         _isUsingCurrentLocation = true;
+        final coarseLat = CoarseLocation.snap(position.latitude);
+        final coarseLon = CoarseLocation.snap(position.longitude);
         report = await _api.fetchLatestReport(
-          lat: position.latitude,
-          lon: position.longitude,
+          lat: coarseLat,
+          lon: coarseLon,
         );
         // ignore: unawaited_futures
         WidgetUpdateService.updateWidgets(report);
@@ -188,7 +191,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                       // 観測メタ情報（控えめなフッター）
                       Text(
                         report.latitude != null && report.longitude != null
-                            ? '観測点: ${report.locationName} (${report.latitude!.toStringAsFixed(2)}°N, ${report.longitude!.toStringAsFixed(2)}°E)  •  更新: ${_formatTime(report.updatedAt)}'
+                            ? '観測エリア: ${report.locationName} (${report.latitude!.toStringAsFixed(1)}°N, ${report.longitude!.toStringAsFixed(1)}°E)  •  更新: ${_formatTime(report.updatedAt)}'
                             : '更新: ${_formatTime(report.updatedAt)}',
                         style: const TextStyle(color: Colors.white30, fontSize: 12),
                       ),
