@@ -91,3 +91,12 @@
 - XcodeのSigning & CapabilitiesでAppleアカウントへサインインし、TeamとProvisioningを確認する。
 - 仮メールアドレスを作成して動作確認する。
 - App Store Connectでアプリレコードを作成し、本メモの文案・URL・スクリーンショットを入力する。
+
+## Xcode Cloud
+
+Xcode Cloudのクリーン環境では、Flutterの生成物をリポジトリから復元できません。`ios/ci_scripts/ci_post_clone.sh` がFlutter 3.47.7を準備し、`flutter pub get` と `flutter build ios --config-only` を実行してからXcodeの依存解決を開始します。
+
+- `ios/Flutter/ephemeral/` は生成物のため、コミットしない。
+- `ios/Runner.xcodeproj/xcshareddata/xcodecloud/manifest.json` はXcode Cloudの製品識別情報なのでコミットする。
+- Xcode Cloudの最初のビルドは、署名ではなくFlutter生成物とArchiveの再現性を確認する。
+- TestFlight配信を有効にした後、App Store Connect側でビルド番号を確認する。現在の公開済みビルドは4のため、次は5以上にする。
