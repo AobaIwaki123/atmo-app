@@ -40,3 +40,4 @@
 - 運営者: ソラケア開発者
 - メール: [support@iorin.net](mailto:support@iorin.net)
 - [サポートページ](https://atmo.iorin.net/support.html)
+- [ソラケアに戻る](https://atmo.iorin.net/)
