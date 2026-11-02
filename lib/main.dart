@@ -8,7 +8,9 @@ import 'api/pressure_api.dart';
 import 'models/location_option.dart';
 import 'models/pressure_report.dart';
 import 'widgets/pressure_chart.dart';
-import 'widgets/atmo_widget_preview.dart';
+import 'widgets/atmo_medium_widget_view.dart';
+import 'widgets/atmo_small_widget_view.dart';
+import 'widgets/widget_content.dart';
 import 'services/location_selection_store.dart';
 import 'services/widget_update_service.dart';
 
@@ -293,6 +295,8 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
 
   /// ウィジェットプレビューセクション (Small: 158×158, Medium: 338×158)
   Widget _buildWidgetPreviewSection(PressureReport report) {
+    final content = WidgetContent.fromReport(report);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -334,8 +338,8 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
               alignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                AtmoSmallWidgetView(report: report),
-                AtmoMediumWidgetView(report: report),
+                AtmoSmallWidgetView(content: content),
+                AtmoMediumWidgetView(content: content),
               ],
             ),
           ),

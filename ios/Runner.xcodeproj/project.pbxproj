@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		A10000000000000000000001 /* AtmoWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000006 /* AtmoWidgets.swift */; };
 		A10000000000000000000002 /* AtmoWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A10000000000000000000005 /* AtmoWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B10000000000000000000001 /* AtmoWidgetEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000011 /* AtmoWidgetEntry.swift */; };
+		B10000000000000000000002 /* AtmoWidgetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000012 /* AtmoWidgetStore.swift */; };
+		B10000000000000000000003 /* AtmoWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000013 /* AtmoWidgetProvider.swift */; };
+		B10000000000000000000004 /* AtmoWidgetDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000014 /* AtmoWidgetDesign.swift */; };
+		B10000000000000000000005 /* AtmoWidgetChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000015 /* AtmoWidgetChart.swift */; };
+		B10000000000000000000006 /* AtmoWidgetViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000016 /* AtmoWidgetViews.swift */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
@@ -66,6 +72,12 @@
 		A10000000000000000000006 /* AtmoWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtmoWidgets.swift; sourceTree = "<group>"; };
 		A10000000000000000000007 /* AtmoWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AtmoWidgets.entitlements; sourceTree = "<group>"; };
 		A10000000000000000000008 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B10000000000000000000011 /* AtmoWidgetEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtmoWidgetEntry.swift; sourceTree = "<group>"; };
+		B10000000000000000000012 /* AtmoWidgetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtmoWidgetStore.swift; sourceTree = "<group>"; };
+		B10000000000000000000013 /* AtmoWidgetProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtmoWidgetProvider.swift; sourceTree = "<group>"; };
+		B10000000000000000000014 /* AtmoWidgetDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtmoWidgetDesign.swift; sourceTree = "<group>"; };
+		B10000000000000000000015 /* AtmoWidgetChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtmoWidgetChart.swift; sourceTree = "<group>"; };
+		B10000000000000000000016 /* AtmoWidgetViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtmoWidgetViews.swift; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
@@ -108,6 +120,12 @@
 			isa = PBXGroup;
 			children = (
 				A10000000000000000000006 /* AtmoWidgets.swift */,
+				B10000000000000000000011 /* AtmoWidgetEntry.swift */,
+				B10000000000000000000012 /* AtmoWidgetStore.swift */,
+				B10000000000000000000013 /* AtmoWidgetProvider.swift */,
+				B10000000000000000000014 /* AtmoWidgetDesign.swift */,
+				B10000000000000000000015 /* AtmoWidgetChart.swift */,
+				B10000000000000000000016 /* AtmoWidgetViews.swift */,
 				A10000000000000000000007 /* AtmoWidgets.entitlements */,
 				A10000000000000000000008 /* Info.plist */,
 			);
@@ -347,6 +365,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000000000000000000001 /* AtmoWidgets.swift in Sources */,
+				B10000000000000000000001 /* AtmoWidgetEntry.swift in Sources */,
+				B10000000000000000000002 /* AtmoWidgetStore.swift in Sources */,
+				B10000000000000000000003 /* AtmoWidgetProvider.swift in Sources */,
+				B10000000000000000000004 /* AtmoWidgetDesign.swift in Sources */,
+				B10000000000000000000005 /* AtmoWidgetChart.swift in Sources */,
+				B10000000000000000000006 /* AtmoWidgetViews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
