@@ -110,7 +110,7 @@ struct AtmoSmallWidget: Widget {
             AtmoWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("atmo 気圧推移 (Small)")
-        .description("現在地の気圧とスパークライン推移を表示します。")
+        .description("選択地点の気圧とスパークライン推移を表示します。")
         .supportedFamilies([.systemSmall])
         .contentMarginsDisabled()
     }
@@ -124,7 +124,7 @@ struct AtmoMediumWidget: Widget {
             AtmoWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("atmo 気圧推移 (Medium)")
-        .description("現在地の気圧とワイド推移グラフを表示します。")
+        .description("選択地点の気圧とワイド推移グラフを表示します。")
         .supportedFamilies([.systemMedium])
         .contentMarginsDisabled()
     }

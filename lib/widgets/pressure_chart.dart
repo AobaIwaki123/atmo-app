@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+
 import '../models/pressure_report.dart';
 
 class PressureChart extends StatelessWidget {
@@ -50,18 +51,27 @@ class PressureChart extends StatelessWidget {
             maxY: maxY,
             gridData: const FlGridData(show: false),
             titlesData: FlTitlesData(
-              topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              topTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              rightTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
               leftTitles: AxisTitles(
                 sideTitles: SideTitles(
                   showTitles: true,
                   reservedSize: 42,
                   interval: 4,
                   getTitlesWidget: (value, meta) {
-                    if (value == minY || value == maxY) return const SizedBox.shrink();
+                    if (value == minY || value == maxY) {
+                      return const SizedBox.shrink();
+                    }
                     return Text(
                       '${value.toInt()}',
-                      style: const TextStyle(color: Colors.white38, fontSize: 10),
+                      style: const TextStyle(
+                        color: Colors.white38,
+                        fontSize: 10,
+                      ),
                     );
                   },
                 ),
@@ -73,7 +83,9 @@ class PressureChart extends StatelessWidget {
                   interval: 6, // 6時間おきにラベル表示
                   getTitlesWidget: (value, meta) {
                     final idx = value.toInt();
-                    if (idx < 0 || idx >= series.length) return const SizedBox.shrink();
+                    if (idx < 0 || idx >= series.length) {
+                      return const SizedBox.shrink();
+                    }
                     final timeStr = series[idx].time;
                     // "2026-10-14T18:00" -> "18:00"
                     final hourStr = timeStr.contains('T')
@@ -83,7 +95,10 @@ class PressureChart extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 6.0),
                       child: Text(
                         hourStr,
-                        style: const TextStyle(color: Colors.white38, fontSize: 10),
+                        style: const TextStyle(
+                          color: Colors.white38,
+                          fontSize: 10,
+                        ),
                       ),
                     );
                   },

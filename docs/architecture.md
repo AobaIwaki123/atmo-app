@@ -30,7 +30,7 @@
 | リポジトリ | 主な役割 | 技術スタック | デプロイ・稼働先 |
 |---|---|---|---|
 | **`atmo`**<br>(バックエンド & Webサーバー) | ・Open-Meteo 気圧データの空間キャッシュ API<br>・Discord への定期気圧アラート通知 (CronJob)<br>・Flutter Web ビルド成果物のホスティング | Go (Golang) | 自宅 Kubernetes<br>(`https://atmo.aooba.net`) |
-| **`atmo-app`**<br>(フロントエンド / アプリ本体) | ・iOS / Android / Web 向けの共通 UI 描画<br>・24時間気圧推移グラフ (`fl_chart`)<br>・ホーム画面ウィジェット (WidgetKit / AppWidget)<br>・プライバシー保護（おおよその位置情報の取得） | Flutter (Dart)<br>Swift (iOS ウィジェット)<br>Kotlin (Android ウィジェット) | App Store / TestFlight<br>GitHub Releases (APK) |
+| **`atmo-app`**<br>(フロントエンド / アプリ本体) | ・iOS / Android / Web 向けの共通 UI 描画<br>・24時間気圧推移グラフ (`fl_chart`)<br>・ホーム画面ウィジェット (WidgetKit / AppWidget)<br>・47都道府県の代表地点選択と簡易検索<br>・端末位置情報を使わないプライバシー設計 | Flutter (Dart)<br>Swift (iOS ウィジェット)<br>Kotlin (Android ウィジェット) | App Store / TestFlight<br>GitHub Releases (APK) |
 
 ---
 

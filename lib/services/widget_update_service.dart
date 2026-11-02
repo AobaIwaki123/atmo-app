@@ -1,14 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
+
 import '../models/pressure_report.dart';
 import '../widgets/atmo_widget_preview.dart';
 
 /// ホーム画面ウィジェットの更新を司るサービス
 class WidgetUpdateService {
   static const String appGroupId = 'group.net.aooba.atmo';
-  static const String smallAndroidProvider = 'net.aooba.atmo_app.AtmoSmallWidgetProvider';
-  static const String mediumAndroidProvider = 'net.aooba.atmo_app.AtmoMediumWidgetProvider';
+  static const String smallAndroidProvider =
+      'net.aooba.atmo_app.AtmoSmallWidgetProvider';
+  static const String mediumAndroidProvider =
+      'net.aooba.atmo_app.AtmoMediumWidgetProvider';
   static const String smallIOSWidget = 'AtmoSmallWidget';
   static const String mediumIOSWidget = 'AtmoMediumWidget';
 
@@ -28,10 +31,22 @@ class WidgetUpdateService {
 
     try {
       // 1. テキストデータを保存
-      await HomeWidget.saveWidgetData<String>('location_name', report.locationName.isNotEmpty ? report.locationName : '現在地');
-      await HomeWidget.saveWidgetData<String>('current_pressure', report.currentPressure.toStringAsFixed(1));
-      await HomeWidget.saveWidgetData<String>('diff_3h', report.diff3h.toStringAsFixed(1));
-      await HomeWidget.saveWidgetData<String>('hour_text', formatToHourZero(report.updatedAt));
+      await HomeWidget.saveWidgetData<String>(
+        'location_name',
+        report.locationName.isNotEmpty ? report.locationName : '選択地点',
+      );
+      await HomeWidget.saveWidgetData<String>(
+        'current_pressure',
+        report.currentPressure.toStringAsFixed(1),
+      );
+      await HomeWidget.saveWidgetData<String>(
+        'diff_3h',
+        report.diff3h.toStringAsFixed(1),
+      );
+      await HomeWidget.saveWidgetData<String>(
+        'hour_text',
+        formatToHourZero(report.updatedAt),
+      );
       await HomeWidget.saveWidgetData<String>('status', report.status);
 
       // 2. Small ウィジェットの画像をオフスクリーンレンダリング

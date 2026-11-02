@@ -19,10 +19,10 @@ Built with **Flutter** (supporting Web, iOS, Android, and macOS) connecting to t
 ```
 
 - **Minimalist & Clean Codebase**: Kept lightweight (1-2 main UI files) without bloated dependencies.
-- **Privacy by Design (Zero-Knowledge Coarse Location)**:
-  - **ピンポイント現在地の完全排除**: iOSの `NSLocationDefaultAccuracyReduced` により、OS レベルで数キロ四方の広域タイル中心点のみを強制供給。高精度 GPS（自宅・職場特定）のアプリ流入を物理遮断。
-  - **10km固定メッシュスナップ**: クライアント内部で座標を `0.1度`（約10km）単位に丸めて通信。開発者のサーバーログや通信傍受でも居場所特定が原理的に不可能。
-  - **ゼロ・インプット**: 地域の手動検索・切り替えという新たなペイン（UX低下）を生まず、移動先でも自動で安全に現在地周辺の気圧に追従。
+- **Privacy by Design (No Device Location)**:
+  - **GPS・位置情報権限を不使用**: 端末の位置情報サービス、バックグラウンド追跡、外部ジオコーダーを利用しない。
+  - **代表地点の手動選択**: 47都道府県の代表地点から選択し、都道府県名・代表地点名の簡易検索で切り替える。
+  - **選択内容だけを保存**: 選択した都道府県を端末内に保存し、ユーザーアカウントや広告識別子には関連付けない。
 - **Fast Local Feedback**: Run and debug instantly in Chrome (`make dev`) without heavy mobile emulators.
 - **Dark Mode & Data Visualization**: Smooth atmospheric pressure curves and real-time headache risk indicators.
 

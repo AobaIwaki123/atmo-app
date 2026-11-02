@@ -28,10 +28,6 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>NSLocationDefaultAccuracyReduced</key>
-	<true/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>現在地周辺の気圧推移および気象病リスクの目安を表示するため、おおよその位置情報を利用します。通信前に広域メッシュへ丸め、ピンポイントの座標は送信しません。</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
