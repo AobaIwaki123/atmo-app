@@ -4,7 +4,10 @@ import '../models/pressure_report.dart';
 import '../utils/coarse_location.dart';
 
 class PressureApi {
-  static const String defaultEndpoint = 'https://atmo.aooba.net/api/v1/pressure';
+  static const String defaultEndpoint = String.fromEnvironment(
+    'ATMO_API_BASE_URL',
+    defaultValue: 'https://atmo.aooba.net/api/v1/pressure',
+  );
 
   final String endpoint;
   final http.Client _client;

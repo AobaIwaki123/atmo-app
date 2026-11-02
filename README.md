@@ -40,9 +40,10 @@ Built with **Flutter** (supporting Web, iOS, Android, and macOS) connecting to t
 - [x] UI component library evaluation & architectural decision ([docs/ui-library-evaluation.md](docs/ui-library-evaluation.md)).
 
 ### Phase 3: Mobile & Native Polish
-- [ ] Build & test on iOS Simulator / Physical iPhone.
+- [x] Build & test on iOS Simulator.
+- [ ] Physical iPhone / TestFlight signing and review.
 - [ ] Offline caching (local state persistence).
-- [ ] Lock screen / Home screen widget integration.
+- [x] Lock screen / Home screen widget integration.
 
 ## Getting Started
 
