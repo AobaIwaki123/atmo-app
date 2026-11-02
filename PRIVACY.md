@@ -33,7 +33,11 @@
 
 ## 6. データ提供元
 
-気圧データの表示には、[Open-Meteo](https://open-meteo.com/)などの外部サービスを利用します。地名の表示に、[OpenStreetMap](https://www.openstreetmap.org/copyright)の地図・地名データを利用する場合があります。それぞれのサービスが定める利用条件に従って表示・利用します。
+気圧データは[Open-Meteo](https://open-meteo.com/)から提供されています。
+
+Weather data by [Open-Meteo.com](https://open-meteo.com/), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
+都道府県名と代表地点名は、ソラケアにあらかじめ登録した一覧を表示しています。地名検索のために外部の地図サービスへ問い合わせることはありません。
 
 ## 7. お問い合わせ
 

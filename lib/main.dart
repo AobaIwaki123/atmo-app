@@ -14,6 +14,8 @@ import 'services/widget_update_service.dart';
 
 const _supportUrl = 'https://atmo.iorin.net/support.html';
 const _privacyPolicyUrl = 'https://atmo.iorin.net/privacy-policy.html';
+const _openMeteoUrl = 'https://open-meteo.com/';
+const _openMeteoLicenseUrl = 'https://creativecommons.org/licenses/by/4.0/';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -851,12 +853,38 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                 ),
                 const SizedBox(height: 6),
                 const SelectableText(
-                  '気圧データの提供元: Open-Meteo\n地名データの提供元: OpenStreetMap',
+                  '気圧データ: Open-Meteo\nWeather data by Open-Meteo.com, licensed under CC BY 4.0.',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.white54,
                     height: 1.5,
                   ),
+                ),
+                const SizedBox(height: 4),
+                Wrap(
+                  spacing: 12,
+                  children: [
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size(0, 28),
+                      onPressed: () =>
+                          _openExternalPage(context, _openMeteoUrl),
+                      child: const Text(
+                        'Open-Meteoの詳細',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ),
+                    CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size(0, 28),
+                      onPressed: () =>
+                          _openExternalPage(context, _openMeteoLicenseUrl),
+                      child: const Text(
+                        '利用条件（CC BY 4.0）',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 24),
                 Row(
