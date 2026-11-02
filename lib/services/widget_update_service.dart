@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
@@ -13,7 +15,6 @@ class WidgetUpdateService {
   static const String mediumAndroidProvider =
       'net.aooba.atmo_app.AtmoMediumWidgetProvider';
   static const String smallIOSWidget = 'AtmoSmallWidget';
-  static const String mediumIOSWidget = 'AtmoMediumWidget';
 
   /// 初期化 (iOS App Group の登録など)
   static Future<void> initialize() async {
@@ -25,32 +26,56 @@ class WidgetUpdateService {
     }
   }
 
-  /// 気圧レポート取得時にウィジェットをオフスクリーンレンダリングして更新
+  /// 気圧レポート取得時にApp Groupへデータを書き込み、ウィジェットを更新する
   static Future<void> updateWidgets(PressureReport report) async {
     if (kIsWeb) return;
 
     try {
-      // 1. テキストデータを保存
       await HomeWidget.saveWidgetData<String>(
         'location_name',
         report.locationName.isNotEmpty ? report.locationName : '選択地点',
+        appGroupId: appGroupId,
       );
       await HomeWidget.saveWidgetData<String>(
         'current_pressure',
         report.currentPressure.toStringAsFixed(1),
+        appGroupId: appGroupId,
       );
       await HomeWidget.saveWidgetData<String>(
         'diff_3h',
-        report.diff3h.toStringAsFixed(1),
+        '${report.diff3h >= 0 ? '+' : ''}${report.diff3h.toStringAsFixed(1)}',
+        appGroupId: appGroupId,
       );
       await HomeWidget.saveWidgetData<String>(
         'hour_text',
         formatToHourZero(report.updatedAt),
+        appGroupId: appGroupId,
       );
-      await HomeWidget.saveWidgetData<String>('status', report.status);
+      await HomeWidget.saveWidgetData<String>(
+        'status',
+        report.status,
+        appGroupId: appGroupId,
+      );
 
-      // 2. Small ウィジェットの画像をオフスクリーンレンダリング
-      await HomeWidget.renderFlutterWidget(
+      final series = report.series.map((point) => point.pressure).toList();
+      var currentIndex = report.series.indexWhere((point) => point.isCurrent);
+      if (currentIndex < 0 && series.isNotEmpty) {
+        currentIndex = series.length ~/ 2;
+      }
+      await HomeWidget.saveWidgetData<String>(
+        'series_json',
+        jsonEncode(series),
+        appGroupId: appGroupId,
+      );
+      await HomeWidget.saveWidgetData<String>(
+        'current_index',
+        currentIndex.toString(),
+        appGroupId: appGroupId,
+      );
+
+      // アプリ本体と同じFlutter UIをApp Groupへ画像として保存する。
+      // WidgetKit側はこの画像を優先し、画像生成に失敗した場合だけSwiftUIへフォールバックする。
+      final smallImagePath = await HomeWidget.renderFlutterWidget(
         Material(
           color: Colors.transparent,
           child: Directionality(
@@ -61,10 +86,9 @@ class WidgetUpdateService {
         key: 'atmo_small_chart',
         logicalSize: const Size(158, 158),
         pixelRatio: 3.0,
+        appGroupId: appGroupId,
       );
-
-      // 3. Medium ウィジェットの画像をオフスクリーンレンダリング
-      await HomeWidget.renderFlutterWidget(
+      final mediumImagePath = await HomeWidget.renderFlutterWidget(
         Material(
           color: Colors.transparent,
           child: Directionality(
@@ -75,9 +99,13 @@ class WidgetUpdateService {
         key: 'atmo_medium_chart',
         logicalSize: const Size(338, 158),
         pixelRatio: 3.0,
+        appGroupId: appGroupId,
+      );
+      debugPrint(
+        'Home widget images saved: small=$smallImagePath, medium=$mediumImagePath',
       );
 
-      // 4. プラットフォームにウィジェット更新を通知
+      // 小・中サイズを同じWidgetKit構成で提供する。
       await HomeWidget.updateWidget(
         name: 'AtmoSmallWidgetProvider',
         androidName: 'AtmoSmallWidgetProvider',
@@ -85,10 +113,10 @@ class WidgetUpdateService {
         qualifiedAndroidName: smallAndroidProvider,
       );
 
+      // Android側の中サイズも従来どおり更新する。
       await HomeWidget.updateWidget(
         name: 'AtmoMediumWidgetProvider',
         androidName: 'AtmoMediumWidgetProvider',
-        iOSName: mediumIOSWidget,
         qualifiedAndroidName: mediumAndroidProvider,
       );
 
