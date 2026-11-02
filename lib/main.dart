@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'api/pressure_api.dart';
 import 'models/location_option.dart';
@@ -10,6 +11,9 @@ import 'widgets/pressure_chart.dart';
 import 'widgets/atmo_widget_preview.dart';
 import 'services/location_selection_store.dart';
 import 'services/widget_update_service.dart';
+
+const _supportUrl = 'https://atmo.iorin.net/support.html';
+const _privacyPolicyUrl = 'https://atmo.iorin.net/privacy-policy.html';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -829,7 +833,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                 ),
                 const SizedBox(height: 12),
                 const Text(
-                  '本アプリは端末の位置情報サービス、GPS、バックグラウンド追跡を使用しません。都道府県の代表地点を選択し、その地点の気圧データを取得します。地点の選択内容は端末内に保存され、アカウントや広告識別子には関連付けません。',
+                  'ソラケアは、端末の位置情報や移動履歴を使いません。都道府県の代表地点を自分で選び、その地点の気圧データを表示します。選んだ地点は次回起動時のために端末内へ保存しますが、アカウントや広告には利用しません。',
                   style: TextStyle(
                     fontSize: 13,
                     color: Colors.white70,
@@ -847,7 +851,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                 ),
                 const SizedBox(height: 6),
                 const SelectableText(
-                  '気象データ: Open-Meteo (CC BY 4.0)\n地名データ: © OpenStreetMap contributors',
+                  '気圧データの提供元: Open-Meteo\n地名データの提供元: OpenStreetMap',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.white54,
@@ -855,6 +859,38 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                   ),
                 ),
                 const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CupertinoButton(
+                        color: Colors.white12,
+                        borderRadius: BorderRadius.circular(12),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        onPressed: () =>
+                            _openExternalPage(context, _supportUrl),
+                        child: const Text(
+                          'サポートページ',
+                          style: TextStyle(color: Colors.white, fontSize: 13),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: CupertinoButton(
+                        color: Colors.white12,
+                        borderRadius: BorderRadius.circular(12),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        onPressed: () =>
+                            _openExternalPage(context, _privacyPolicyUrl),
+                        child: const Text(
+                          'プライバシーポリシー',
+                          style: TextStyle(color: Colors.white, fontSize: 13),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
                   child: CupertinoButton(
@@ -874,5 +910,16 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
         );
       },
     );
+  }
+
+  Future<void> _openExternalPage(BuildContext context, String url) async {
+    final launched = await launchUrl(
+      Uri.parse(url),
+      mode: LaunchMode.externalApplication,
+    );
+    if (!launched && context.mounted) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('ページを開けませんでした。')));
+    }
   }
 }

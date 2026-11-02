@@ -40,6 +40,12 @@ void main() {
   testWidgets('AtmoApp smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const AtmoApp());
     expect(find.text('ソラケア'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('プライバシーについて'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.text('サポートページ'), findsOneWidget);
+    expect(find.text('プライバシーポリシー'), findsOneWidget);
   });
 
   testWidgets('地点選択画面を開いて代表地点を検索できる', (WidgetTester tester) async {
