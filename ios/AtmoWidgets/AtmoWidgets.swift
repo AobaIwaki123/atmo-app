@@ -1,7 +1,7 @@
 import WidgetKit
 import SwiftUI
 
-private let appGroupId = "group.net.iorin.atmoapp"
+private let appGroupId = "group.net.iorin.atmoapp.shared"
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> AtmoEntry {
