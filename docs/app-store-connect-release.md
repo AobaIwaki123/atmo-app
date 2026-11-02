@@ -68,6 +68,7 @@
 
 - Xcode Simulatorで、個人情報・通知・第三者コンテンツが写っていない状態を作って撮影する。
 - まずiPhoneの主要サイズを用意し、App Store Connectの現在のアップロード要件に合うサイズで書き出す。
+- 撮影済み候補: `docs/screenshots/atmo-iphone18pro-main.png`（1206×2622）、`docs/screenshots/atmo-ipad-pro13-main.png`（2064×2752）。
 - 1枚目: 現在の気圧とステータスが分かるメイン画面。
 - 2枚目: 48時間グラフと気圧変化。
 - 3枚目: 位置情報の説明またはウィジェットプレビュー。
