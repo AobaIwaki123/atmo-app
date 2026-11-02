@@ -85,7 +85,7 @@
 ## ユーザー側で最後に行う作業
 
 - Apple Developerで `net.iorin.atmoapp` と `net.iorin.atmoapp.AtmoWidgets` のApp IDを登録する。
-- App Group `group.net.iorin.atmoapp` を登録し、両App IDへ割り当てる。
+- App Group `group.net.iorin.atmoapp.shared` を登録し、両App IDへ割り当てる。
 - XcodeのSigning & CapabilitiesでAppleアカウントへサインインし、TeamとProvisioningを確認する。
 - 仮メールアドレスを作成して動作確認する。
 - App Store Connectでアプリレコードを作成し、本メモの文案・URL・スクリーンショットを入力する。
