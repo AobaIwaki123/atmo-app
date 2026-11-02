@@ -40,13 +40,13 @@
 
 ### URL
 
-- 現行サポートURL: `https://atmo.aooba.net/support.html`
-- 現行マーケティングURL: `https://atmo.aooba.net/`
-- 現行プライバシーポリシーURL: `https://atmo.aooba.net/privacy-policy.html`
-- 移行後の候補URL: `https://atmo.iorin.net/` / `https://atmo.iorin.net/support.html` / `https://atmo.iorin.net/privacy-policy.html`
+- サポートURL: `https://atmo.iorin.net/support.html`
+- マーケティングURL: `https://atmo.iorin.net/`
+- プライバシーポリシーURL: `https://atmo.iorin.net/privacy-policy.html`
+- 旧URL（移行期間の互換用）: `https://atmo.aooba.net/`
 - サポートメール: `support@iorin.net`
 
-`atmo.iorin.net` のDNS・HTTPS・API配信が完了したら、App Store Connectには移行後URLを入力します。移行前に提出する場合は現行URLを使い、提出前に必ず実ブラウザで到達性を確認します。
+`atmo.iorin.net` のDNS・HTTPS・API配信が完了したことを実ブラウザで確認してから、App Store Connectには新URLを入力します。旧URLは移行期間中、可能な限り互換エンドポイントまたは移行案内として維持します。
 
 ## App Privacy申告案
 
