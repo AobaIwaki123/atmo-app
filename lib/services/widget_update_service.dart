@@ -7,7 +7,7 @@ import '../widgets/atmo_widget_preview.dart';
 
 /// ホーム画面ウィジェットの更新を司るサービス
 class WidgetUpdateService {
-  static const String appGroupId = 'group.net.aooba.atmo';
+  static const String appGroupId = 'group.net.iorin.atmo';
   static const String smallAndroidProvider =
       'net.aooba.atmo_app.AtmoSmallWidgetProvider';
   static const String mediumAndroidProvider =

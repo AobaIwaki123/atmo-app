@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.net.aooba.atmo</string>
+		<string>group.net.iorin.atmo</string>
 	</array>
 </dict>
 </plist>
