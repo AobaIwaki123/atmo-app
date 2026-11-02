@@ -5,8 +5,8 @@
 ## アプリ識別情報
 
 - アプリ名: `atmo`
-- Bundle ID: `net.iorin.atmo`
-- iOS Widget Extension: `net.iorin.atmo.AtmoWidgets`
+- Bundle ID: `net.iorin.atmoapp`
+- iOS Widget Extension: `net.iorin.atmoapp.AtmoWidgets`
 - Team ID: `AL4Q7473XC`
 - バージョン: `1.0.0 (1)`
 - 著作権: `© 2026 Aoba Iwaki`
@@ -84,8 +84,8 @@
 
 ## ユーザー側で最後に行う作業
 
-- Apple Developerで `net.iorin.atmo` と `net.iorin.atmo.AtmoWidgets` のApp IDを登録する。
-- App Group `group.net.iorin.atmo` を登録し、両App IDへ割り当てる。
+- Apple Developerで `net.iorin.atmoapp` と `net.iorin.atmoapp.AtmoWidgets` のApp IDを登録する。
+- App Group `group.net.iorin.atmoapp` を登録し、両App IDへ割り当てる。
 - XcodeのSigning & CapabilitiesでAppleアカウントへサインインし、TeamとProvisioningを確認する。
 - 仮メールアドレスを作成して動作確認する。
 - App Store Connectでアプリレコードを作成し、本メモの文案・URL・スクリーンショットを入力する。

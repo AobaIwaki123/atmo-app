@@ -10,7 +10,7 @@ class LocationSelectionStore {
   LocationSelectionStore._();
 
   static const String _key = 'selected_location_prefecture';
-  static const String _appGroupId = 'group.net.iorin.atmo';
+  static const String _appGroupId = 'group.net.iorin.atmoapp';
 
   static Future<LocationOption?> load() async {
     if (kIsWeb) {
