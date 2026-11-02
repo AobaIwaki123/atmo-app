@@ -39,7 +39,7 @@ class _FakePressureApi extends PressureApi {
 void main() {
   testWidgets('AtmoApp smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const AtmoApp());
-    expect(find.text('atmo'), findsOneWidget);
+    expect(find.text('ソラケア'), findsOneWidget);
   });
 
   testWidgets('地点選択画面を開いて代表地点を検索できる', (WidgetTester tester) async {

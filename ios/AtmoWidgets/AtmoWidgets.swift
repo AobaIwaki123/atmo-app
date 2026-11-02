@@ -70,7 +70,7 @@ struct AtmoWidgetEntryView : View {
             Image(systemName: "barometer")
                 .font(.system(size: 24))
                 .foregroundColor(.cyan)
-            Text("atmo")
+            Text("ソラケア")
                 .font(.headline)
                 .foregroundColor(.white)
             Text("アプリを開いて更新")
@@ -109,7 +109,7 @@ struct AtmoSmallWidget: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             AtmoWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("atmo 気圧推移 (Small)")
+        .configurationDisplayName("ソラケア 気圧推移 (小型)")
         .description("選択地点の気圧とスパークライン推移を表示します。")
         .supportedFamilies([.systemSmall])
         .contentMarginsDisabled()
@@ -123,7 +123,7 @@ struct AtmoMediumWidget: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             AtmoWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("atmo 気圧推移 (Medium)")
+        .configurationDisplayName("ソラケア 気圧推移 (中型)")
         .description("選択地点の気圧とワイド推移グラフを表示します。")
         .supportedFamilies([.systemMedium])
         .contentMarginsDisabled()
