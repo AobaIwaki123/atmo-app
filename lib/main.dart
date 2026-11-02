@@ -34,6 +34,9 @@ class AtmoApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
+        // iOSではSF Proを優先し、Web/Androidでは各プラットフォームの
+        // フォールバック書体へ自然に切り替える。
+        fontFamily: '.SF Pro Text',
         // Apple HIG: 深いミッドナイトネイビー
         scaffoldBackgroundColor: const Color(0xFF060913),
         colorScheme: const ColorScheme.dark(
@@ -102,20 +105,23 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       appBar: AppBar(
         title: const Text(
           'ソラケア',
           style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 17,
-            letterSpacing: 0.5,
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            letterSpacing: 0,
             color: Colors.white70,
           ),
         ),
-        centerTitle: true,
+        centerTitle: false,
+        titleSpacing: 20,
         backgroundColor: Colors.transparent,
         elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
         actions: [
           IconButton(
             icon: const Icon(
@@ -203,7 +209,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                   constraints: const BoxConstraints(maxWidth: 580),
                   child: Column(
                     children: [
-                      const SizedBox(height: kToolbarHeight + 10),
+                      const SizedBox(height: 16),
 
                       // 【Apple HIG ヒーローセクション: 画面全体を支配する巨大な中央タイポグラフィ】
                       _buildAppleHero(report, cleanMessage, isCaution),
@@ -361,10 +367,11 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
             Text(
               displayName,
               style: const TextStyle(
+                fontFamily: '.SF Pro Display',
                 fontSize: 28,
                 fontWeight: FontWeight.w400,
                 color: Colors.white,
-                letterSpacing: 0.5,
+                letterSpacing: 0,
               ),
             ),
           ],
@@ -382,6 +389,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
               Text(
                 report.currentPressure.toStringAsFixed(1),
                 style: const TextStyle(
+                  fontFamily: '.SF Pro Display',
                   fontSize: 88,
                   fontWeight: FontWeight.w200,
                   color: Colors.white,
