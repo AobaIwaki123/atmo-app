@@ -7,16 +7,18 @@ extension type PressurePoint(Map<String, dynamic> raw) {
 
 extension type PressureReport(Map<String, dynamic> raw) {
   String get updatedAt => raw['updated_at'] ?? '';
-  double get currentPressure => (raw['current_pressure'] as num?)?.toDouble() ?? 0.0;
+  double get currentPressure =>
+      (raw['current_pressure'] as num?)?.toDouble() ?? 0.0;
   double get diff3h => (raw['diff_3h'] as num?)?.toDouble() ?? 0.0;
   double get temperature => (raw['temperature'] as num?)?.toDouble() ?? 0.0;
   String get status => raw['status'] ?? 'normal';
   String get statusMessage => raw['status_message'] ?? '';
   bool get isCaution => status == 'caution';
 
-  double? get latitude => (raw['latitude'] as num?)?.toDouble();
-  double? get longitude => (raw['longitude'] as num?)?.toDouble();
-  String get locationName => raw['location_name'] ?? '現在地';
+  String get locationName => raw['location_name'] ?? '選択地点';
+
+  PressureReport withLocationName(String name) =>
+      PressureReport({...raw, 'location_name': name});
 
   List<PressurePoint> get series =>
       (raw['series'] as List<dynamic>?)

@@ -1,6 +1,8 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+
 import '../models/pressure_report.dart';
 
 /// ウィジェット用の正時 (HH:00) フォーマットヘルパー
@@ -90,7 +92,7 @@ class MiniPressureChartPainter extends CustomPainter {
 
     canvas.drawPath(path, linePaint);
 
-    // 現在地点のドット & 縦ガイドライン
+    // 現在時刻のドット & 縦ガイドライン
     if (currentIndex >= 0 && currentIndex < points.length) {
       final currentPoint = points[currentIndex];
 
@@ -135,7 +137,9 @@ class AtmoSmallWidgetView extends StatelessWidget {
   Widget build(BuildContext context) {
     final statusColor = report.isCaution
         ? const Color(0xFFF87171)
-        : (report.status == 'notice' ? const Color(0xFFFBBF24) : const Color(0xFF38BDF8));
+        : (report.status == 'notice'
+              ? const Color(0xFFFBBF24)
+              : const Color(0xFF38BDF8));
 
     // 過去12h + 未来12h の気圧データを抽出
     final series = report.series;
@@ -149,7 +153,9 @@ class AtmoSmallWidgetView extends StatelessWidget {
     final localCurrentIdx = currentIdx - startIdx;
 
     final hourText = formatToHourZero(report.updatedAt);
-    final locationText = report.locationName.isNotEmpty ? report.locationName : '現在地';
+    final locationText = report.locationName.isNotEmpty
+        ? report.locationName
+        : '選択地点';
 
     return Container(
       width: 158,
@@ -158,7 +164,10 @@ class AtmoSmallWidgetView extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF0F172A),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08), width: 1),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.08),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.4),
@@ -173,7 +182,11 @@ class AtmoSmallWidgetView extends StatelessWidget {
           // ヘッダー: 地名/区市名 + 観測正時 + 状態インジケーター
           Row(
             children: [
-              const Icon(CupertinoIcons.location_fill, size: 11, color: Colors.white60),
+              const Icon(
+                CupertinoIcons.map_pin_ellipse,
+                size: 11,
+                color: Colors.white60,
+              ),
               const SizedBox(width: 3),
               Expanded(
                 child: Text(
@@ -210,38 +223,42 @@ class AtmoSmallWidgetView extends StatelessWidget {
           const SizedBox(height: 6),
 
           // 現在気圧の控えめな表示 (主役のグラフを邪魔しない)
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                report.currentPressure.toStringAsFixed(1),
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w300,
-                  color: Colors.white,
-                  letterSpacing: -0.5,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  report.currentPressure.toStringAsFixed(1),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.white,
+                    letterSpacing: -0.5,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 3),
-              const Text(
-                'hPa',
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white38,
+                const SizedBox(width: 3),
+                const Text(
+                  'hPa',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white38,
+                  ),
                 ),
-              ),
-              const Spacer(),
-              Text(
-                '${report.diff3h >= 0 ? "+" : ""}${report.diff3h.toStringAsFixed(1)}',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                  color: statusColor,
+                const SizedBox(width: 6),
+                Text(
+                  '${report.diff3h >= 0 ? "+" : ""}${report.diff3h.toStringAsFixed(1)}',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: statusColor,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
 
           // 主役のベジェ曲線グラフ（残り領域をすべて使用）
@@ -273,7 +290,9 @@ class AtmoMediumWidgetView extends StatelessWidget {
   Widget build(BuildContext context) {
     final statusColor = report.isCaution
         ? const Color(0xFFF87171)
-        : (report.status == 'notice' ? const Color(0xFFFBBF24) : const Color(0xFF38BDF8));
+        : (report.status == 'notice'
+              ? const Color(0xFFFBBF24)
+              : const Color(0xFF38BDF8));
 
     final series = report.series;
     int currentIdx = series.indexWhere((p) => p.isCurrent);
@@ -286,7 +305,9 @@ class AtmoMediumWidgetView extends StatelessWidget {
     final localCurrentIdx = currentIdx - startIdx;
 
     final hourText = formatToHourZero(report.updatedAt);
-    final locationText = report.locationName.isNotEmpty ? report.locationName : '現在地';
+    final locationText = report.locationName.isNotEmpty
+        ? report.locationName
+        : '選択地点';
 
     return Container(
       width: 338,
@@ -295,7 +316,10 @@ class AtmoMediumWidgetView extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF0F172A),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08), width: 1),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.08),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.4),
@@ -318,7 +342,11 @@ class AtmoMediumWidgetView extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Icon(CupertinoIcons.location_fill, size: 12, color: Colors.white60),
+                        const Icon(
+                          CupertinoIcons.map_pin_ellipse,
+                          size: 12,
+                          color: Colors.white60,
+                        ),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
@@ -347,51 +375,59 @@ class AtmoMediumWidgetView extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: [
-                        Text(
-                          report.currentPressure.toStringAsFixed(1),
-                          style: const TextStyle(
-                            fontSize: 26,
-                            fontWeight: FontWeight.w200,
-                            color: Colors.white,
-                            letterSpacing: -1.0,
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
+                        children: [
+                          Text(
+                            report.currentPressure.toStringAsFixed(1),
+                            style: const TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.w200,
+                              color: Colors.white,
+                              letterSpacing: -1.0,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 3),
-                        const Text(
-                          'hPa',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white38,
+                          const SizedBox(width: 3),
+                          const Text(
+                            'hPa',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white38,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 2),
-                    Row(
-                      children: [
-                        Container(
-                          width: 7,
-                          height: 7,
-                          decoration: BoxDecoration(
-                            color: statusColor,
-                            shape: BoxShape.circle,
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 7,
+                            height: 7,
+                            decoration: BoxDecoration(
+                              color: statusColor,
+                              shape: BoxShape.circle,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          '3h: ${report.diff3h >= 0 ? "+" : ""}${report.diff3h.toStringAsFixed(1)} hPa',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                            color: statusColor,
+                          const SizedBox(width: 5),
+                          Text(
+                            '3h: ${report.diff3h >= 0 ? "+" : ""}${report.diff3h.toStringAsFixed(1)} hPa',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                              color: statusColor,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -422,9 +458,18 @@ class AtmoMediumWidgetView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
-                    Text('-12h', style: TextStyle(color: Colors.white24, fontSize: 9)),
-                    Text('現在', style: TextStyle(color: Colors.white38, fontSize: 9)),
-                    Text('+12h', style: TextStyle(color: Colors.white24, fontSize: 9)),
+                    Text(
+                      '-12h',
+                      style: TextStyle(color: Colors.white24, fontSize: 9),
+                    ),
+                    Text(
+                      '現在',
+                      style: TextStyle(color: Colors.white38, fontSize: 9),
+                    ),
+                    Text(
+                      '+12h',
+                      style: TextStyle(color: Colors.white24, fontSize: 9),
+                    ),
                   ],
                 ),
               ],
