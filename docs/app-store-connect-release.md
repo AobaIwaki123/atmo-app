@@ -10,7 +10,7 @@
 - iOS Widget Extension: `net.iorin.atmoapp.AtmoWidgets`
 - Team ID: `AL4Q7473XC`
 - バージョン: `1.0.0 (1)`
-- 著作権: `© 2026 Aoba Iwaki`
+- 著作権: `© 2026 （App Store Connectで使用する正式な権利者名）`
 - 想定カテゴリ: Weather（最終決定はApp Store Connectで行う）
 
 ## プロダクトページ文案
