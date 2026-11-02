@@ -7,7 +7,7 @@ import '../models/pressure_report.dart';
 class PressureApi {
   static const String defaultEndpoint = String.fromEnvironment(
     'ATMO_API_BASE_URL',
-    defaultValue: 'https://atmo.aooba.net/api/v1/pressure',
+    defaultValue: 'https://atmo.iorin.net/api/v1/pressure',
   );
 
   final String endpoint;
