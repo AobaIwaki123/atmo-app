@@ -23,7 +23,7 @@ class AtmoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'atmo',
+      title: 'ソラケア',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
@@ -99,7 +99,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: const Text(
-          'atmo',
+          'ソラケア',
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 17,
