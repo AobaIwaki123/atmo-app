@@ -592,11 +592,29 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                 ),
                 const SizedBox(height: 12),
                 const Text(
-                  'ピンポイントな現在地（GPS）は取得せず、端末内で約10km四方の大まかなエリアに丸めて気圧を取得しています。\n\n正確な居場所や住所が特定・送信されることはありません。',
+                  '標準ではおおよその位置情報を利用し、通信前に約10km四方の大まかなエリアへ丸めて気圧を取得しています。より細かい位置が端末から返った場合も、正確な座標は通信・保存しません。',
                   style: TextStyle(
                     fontSize: 13,
                     color: Colors.white70,
                     height: 1.6,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  'データ提供元',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white70,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                const SelectableText(
+                  '気象データ: Open-Meteo (CC BY 4.0)\n地名データ: © OpenStreetMap contributors',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white54,
+                    height: 1.5,
                   ),
                 ),
                 const SizedBox(height: 24),

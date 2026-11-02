@@ -62,7 +62,7 @@ struct AtmoWidgetEntryView : View {
                 fallbackView
             }
         }
-        .containerBackground(Color(red: 15/255, green: 23/255, blue: 42/255), for: .widget)
+        .modifier(AtmoWidgetBackgroundModifier())
     }
 
     var fallbackView: some View {
@@ -78,6 +78,19 @@ struct AtmoWidgetEntryView : View {
                 .foregroundColor(.gray)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+private struct AtmoWidgetBackgroundModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 17.0, *) {
+            content.containerBackground(
+                Color(red: 15/255, green: 23/255, blue: 42/255),
+                for: .widget
+            )
+        } else {
+            content.background(Color(red: 15/255, green: 23/255, blue: 42/255))
+        }
     }
 }
 
