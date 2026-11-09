@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../models/pressure_report.dart';
 import 'widget_formatters.dart';
 
@@ -12,6 +14,9 @@ class WidgetContent {
   final String status;
   final List<double> pressures;
   final int currentIndex;
+  final double latitude;
+  final double longitude;
+  final String rawSeriesJson;
 
   const WidgetContent({
     required this.locationName,
@@ -21,6 +26,9 @@ class WidgetContent {
     required this.status,
     required this.pressures,
     required this.currentIndex,
+    this.latitude = 35.6895,
+    this.longitude = 139.6917,
+    this.rawSeriesJson = '[]',
   });
 
   factory WidgetContent.fromReport(PressureReport report) {
@@ -29,6 +37,8 @@ class WidgetContent {
     if (currentIndex < 0 && points.isNotEmpty) {
       currentIndex = points.length ~/ 2;
     }
+
+    final rawList = report.raw['series'] as List<dynamic>? ?? const [];
 
     return WidgetContent(
       locationName: report.locationName.isNotEmpty
@@ -40,6 +50,9 @@ class WidgetContent {
       status: report.status,
       pressures: List.unmodifiable(points.map((point) => point.pressure)),
       currentIndex: currentIndex,
+      latitude: report.latitude,
+      longitude: report.longitude,
+      rawSeriesJson: jsonEncode(rawList),
     );
   }
 

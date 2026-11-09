@@ -1,15 +1,15 @@
 import SwiftUI
 
-/// SwiftUIフォールバックの見た目を定義するトークン。
+/// SwiftUIウィジェットの見た目を定義するトークン。
 ///
-/// Flutter側の `widget_design_tokens.dart` と対応し、レイアウト側に
+/// Flutter側の `widget_design_tokens.dart` と厳密に対応し、レイアウト側に
 /// 色・文字サイズ・余白のリテラルを増やさない。
 enum AtmoWidgetDesign {
     static let surface = Color(red: 16 / 255, green: 24 / 255, blue: 39 / 255)
-    static let primaryText = Color.white
-    static let secondaryText = Color.white.opacity(0.72)
-    static let tertiaryText = Color.white.opacity(0.47)
-    static let mutedText = Color.white.opacity(0.36)
+    static let primaryText = Color(red: 248 / 255, green: 250 / 255, blue: 252 / 255)
+    static let secondaryText = Color(red: 248 / 255, green: 250 / 255, blue: 252 / 255).opacity(0.72)
+    static let tertiaryText = Color(red: 248 / 255, green: 250 / 255, blue: 252 / 255).opacity(0.47)
+    static let mutedText = Color(red: 248 / 255, green: 250 / 255, blue: 252 / 255).opacity(0.36)
     static let graph = Color(red: 92 / 255, green: 200 / 255, blue: 255 / 255)
     static let normal = Color(red: 98 / 255, green: 214 / 255, blue: 176 / 255)
     static let notice = Color(red: 245 / 255, green: 196 / 255, blue: 81 / 255)
@@ -19,6 +19,10 @@ enum AtmoWidgetDesign {
 
     enum Spacing {
         static let iconToText: CGFloat = 4
+        static let smallTop: CGFloat = 12
+        static let smallHorizontal: CGFloat = 14
+        static let mediumTop: CGFloat = 14
+        static let mediumHorizontal: CGFloat = 18
         static let section: CGFloat = 6
         static let chart: CGFloat = 5
         static let baseline: CGFloat = 3
@@ -34,6 +38,7 @@ enum AtmoWidgetDesign {
         static let mediumColumnGap: CGFloat = 12
         static let mediumChartStackGap: CGFloat = 4
         static let mediumMetadataTop: CGFloat = 2
+        static let statusDot: CGFloat = 6
         static let smallMinimumScale: CGFloat = 0.75
         static let mediumMinimumScale: CGFloat = 0.7
         static let pressureMinimumScale: CGFloat = 0.65
@@ -49,6 +54,7 @@ enum AtmoWidgetDesign {
         static let guideTop: CGFloat = 4
         static let outerDotRadius: CGFloat = 4
         static let innerDotRadius: CGFloat = 2.5
+        static let fillOpacity: Double = 0.22
         static let guideDash: [CGFloat] = [2, 2]
     }
 

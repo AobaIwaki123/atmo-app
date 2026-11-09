@@ -30,11 +30,16 @@ API、App Group、WidgetKitの更新タイミングはデザインファイル�
 
 ## レンダラーの扱い
 
-現在のリリース構成は、アプリ側で生成したFlutter画像をApp Group経由でWidgetKitへ渡す方式を主経路とする。SwiftUIは画像が存在しない場合のフォールバックである。
+リリース構成では、SwiftUIネイティブ描画（`AtmoWidgetViews.swift`）を主経路とする。
+これにより、Flutterアプリが起動していないバックグラウンド環境下でも、Widget Extension自らがAPIフェッチを行い、向こう24時間のタイムラインを自動で展開・定期更新する自律動作を実現する。
 
-したがって、見た目の変更はまずFlutter側のトークンとSmall/Mediumレイアウトへ反映し、SwiftUIフォールバックも同じ規約へ合わせる。Swiftだけを変更しても、画像が正常に保存された端末の主表示は変わらない。
+Flutter側（`widget_design_tokens.dart`）とSwift側（`AtmoWidgetDesign.swift`）のトークン（色、余白、タイポグラフィ、グラデーション塗り）は完全に1対1で統一されており、ピクセルパーフェクトな外観の一致を担保する。
 
-画像方式には、WidgetKitの表示領域や環境に応じた適応性、アクセシビリティ、Dynamic Typeの面で制約がある。将来ネイティブSwiftUIを主経路に変更する場合も、`WidgetContent`相当の表示契約とこのデザイン規約は維持する。
+### バックグラウンド更新とタイムライン設計
+
+1. **API直接フェッチ**: `AtmoWidgetProvider.getTimeline` 内で `URLSession` を用い、最新の観測値と未来24時間の毎時推移を非同期取得する。
+2. **未来タイムライン展開**: 取得した時系列データから、向こう24時間の各時刻ごとの `AtmoEntry` を生成して WidgetKit に渡す。通信が行われない時間帯やオフライン時であっても、OSが自動的に1時間ごとにその時刻の予報値へと表示を切り替える。
+3. **オフライン・フォールバック**: 通信失敗時は、App Groupにキャッシュされた `full_series_json` から同様にタイムラインを再構成する。
 
 ## 情報階層
 

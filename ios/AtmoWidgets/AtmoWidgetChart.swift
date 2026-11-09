@@ -27,6 +27,30 @@ struct AtmoSparkline: View {
             for point in points.dropFirst() {
                 path.addLine(to: point)
             }
+
+            var fillPath = Path()
+            fillPath.move(to: CGPoint(x: points[0].x, y: size.height))
+            for point in points {
+                fillPath.addLine(to: point)
+            }
+            if let last = points.last {
+                fillPath.addLine(to: CGPoint(x: last.x, y: size.height))
+            }
+            fillPath.closeSubpath()
+
+            let fillGradient = Gradient(colors: [
+                lineColor.opacity(AtmoWidgetDesign.Chart.fillOpacity),
+                Color.clear
+            ])
+            context.fill(
+                fillPath,
+                with: .linearGradient(
+                    fillGradient,
+                    startPoint: CGPoint(x: size.width / 2, y: 0),
+                    endPoint: CGPoint(x: size.width / 2, y: size.height)
+                )
+            )
+
             context.stroke(
                 path,
                 with: .color(lineColor),
