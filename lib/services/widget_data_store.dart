@@ -48,5 +48,20 @@ class WidgetDataStore {
       content.currentIndex.toString(),
       appGroupId: appGroupId,
     );
+    await HomeWidget.saveWidgetData<String>(
+      'latitude',
+      content.latitude.toString(),
+      appGroupId: appGroupId,
+    );
+    await HomeWidget.saveWidgetData<String>(
+      'longitude',
+      content.longitude.toString(),
+      appGroupId: appGroupId,
+    );
+    await HomeWidget.saveWidgetData<String>(
+      'full_series_json',
+      content.rawSeriesJson,
+      appGroupId: appGroupId,
+    );
   }
 }

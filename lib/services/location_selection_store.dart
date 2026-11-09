@@ -50,6 +50,21 @@ class LocationSelectionStore {
         option.prefecture,
         appGroupId: WidgetIntegrationConfiguration.appGroupId,
       );
+      await HomeWidget.saveWidgetData<String>(
+        'location_name',
+        option.prefecture,
+        appGroupId: WidgetIntegrationConfiguration.appGroupId,
+      );
+      await HomeWidget.saveWidgetData<String>(
+        'latitude',
+        option.latitude.toString(),
+        appGroupId: WidgetIntegrationConfiguration.appGroupId,
+      );
+      await HomeWidget.saveWidgetData<String>(
+        'longitude',
+        option.longitude.toString(),
+        appGroupId: WidgetIntegrationConfiguration.appGroupId,
+      );
     } catch (_) {
       // Persisting the selection is best effort; the app remains usable.
     }

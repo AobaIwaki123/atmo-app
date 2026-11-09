@@ -16,6 +16,8 @@ extension type PressureReport(Map<String, dynamic> raw) {
   bool get isCaution => status == 'caution';
 
   String get locationName => raw['location_name'] ?? '選択地点';
+  double get latitude => (raw['latitude'] as num?)?.toDouble() ?? 35.6895;
+  double get longitude => (raw['longitude'] as num?)?.toDouble() ?? 139.6917;
 
   PressureReport withLocationName(String name) =>
       PressureReport({...raw, 'location_name': name});

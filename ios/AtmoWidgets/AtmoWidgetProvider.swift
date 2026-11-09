@@ -22,12 +22,9 @@ struct AtmoWidgetProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<AtmoEntry>) -> Void) {
-        let entry = AtmoWidgetStore.loadEntry()
-        let nextUpdate = Calendar.current.date(
-            byAdding: .hour,
-            value: 1,
-            to: Date()
-        ) ?? Date().addingTimeInterval(3600)
-        completion(Timeline(entries: [entry], policy: .after(nextUpdate)))
+        Task {
+            let (entries, nextReload) = await AtmoWidgetStore.fetchTimelineEntries()
+            completion(Timeline(entries: entries, policy: .after(nextReload)))
+        }
     }
 }

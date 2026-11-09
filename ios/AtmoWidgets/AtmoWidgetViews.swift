@@ -11,13 +11,7 @@ struct AtmoWidgetEntryView: View {
             if !entry.hasData {
                 fallbackView
             } else if family == .systemMedium {
-                if let image = AtmoWidgetStore.loadImage(at: entry.mediumImagePath) {
-                    imageView(image)
-                } else {
-                    mediumView
-                }
-            } else if let image = AtmoWidgetStore.loadImage(at: entry.smallImagePath) {
-                imageView(image)
+                mediumView
             } else {
                 smallView
             }
@@ -61,6 +55,12 @@ struct AtmoWidgetEntryView: View {
                 Text(entry.hourText)
                     .font(AtmoWidgetDesign.Typography.timestamp)
                     .foregroundColor(AtmoWidgetDesign.secondaryText)
+                Circle()
+                    .fill(statusColor)
+                    .frame(
+                        width: AtmoWidgetDesign.Metrics.statusDot,
+                        height: AtmoWidgetDesign.Metrics.statusDot
+                    )
             }
 
             HStack(alignment: .lastTextBaseline, spacing: AtmoWidgetDesign.Spacing.baseline) {
@@ -89,8 +89,8 @@ struct AtmoWidgetEntryView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(.top, AtmoWidgetDesign.Spacing.chart)
         }
-        .padding(.horizontal, AtmoWidgetDesign.Metrics.smallPadding)
-        .padding(.vertical, AtmoWidgetDesign.Metrics.smallPadding)
+        .padding(.horizontal, AtmoWidgetDesign.Spacing.smallHorizontal)
+        .padding(.vertical, AtmoWidgetDesign.Spacing.smallTop)
     }
 
     private var mediumView: some View {
@@ -147,8 +147,8 @@ struct AtmoWidgetEntryView: View {
                 .foregroundColor(AtmoWidgetDesign.mutedText)
             }
         }
-        .padding(.horizontal, AtmoWidgetDesign.Metrics.mediumPadding)
-        .padding(.vertical, AtmoWidgetDesign.Metrics.mediumPadding)
+        .padding(.horizontal, AtmoWidgetDesign.Spacing.mediumHorizontal)
+        .padding(.vertical, AtmoWidgetDesign.Spacing.mediumTop)
     }
 
     private var fallbackView: some View {
