@@ -12,11 +12,17 @@ struct AtmoWidgetEntryView: View {
                 fallbackView
             } else if family == .systemMedium {
                 mediumView
+            } else if #available(iOS 16.0, *), family == .accessoryRectangular {
+                accessoryRectangularView
+            } else if #available(iOS 16.0, *), family == .accessoryCircular {
+                accessoryCircularView
+            } else if #available(iOS 16.0, *), family == .accessoryInline {
+                accessoryInlineView
             } else {
                 smallView
             }
         }
-        .modifier(AtmoWidgetBackgroundModifier())
+        .modifier(AtmoWidgetBackgroundModifier(family: family))
     }
 
     private var statusColor: Color {
@@ -151,7 +157,105 @@ struct AtmoWidgetEntryView: View {
         .padding(.vertical, AtmoWidgetDesign.Spacing.mediumTop)
     }
 
+    @available(iOS 16.0, *)
+    private var accessoryRectangularView: some View {
+        VStack(alignment: .leading, spacing: AtmoWidgetDesign.Spacing.accessoryStack) {
+            HStack(spacing: AtmoWidgetDesign.Spacing.iconToText) {
+                Image(systemName: "mappin")
+                    .font(AtmoWidgetDesign.Typography.accessoryTitle)
+                Text(entry.locationName)
+                    .font(AtmoWidgetDesign.Typography.accessoryTitle)
+                    .lineLimit(1)
+                Spacer(minLength: AtmoWidgetDesign.Spacing.smallSpacer)
+                HStack(spacing: 2) {
+                    Image(systemName: AtmoWidgetDesign.trendSymbol(for: entry.diff3h))
+                    Text(entry.diff3h)
+                }
+                .font(AtmoWidgetDesign.Typography.accessoryDelta)
+            }
+
+            HStack(alignment: .bottom, spacing: AtmoWidgetDesign.Spacing.accessoryRectangularGap) {
+                HStack(alignment: .lastTextBaseline, spacing: 2) {
+                    Text(entry.currentPressure)
+                        .font(AtmoWidgetDesign.Typography.accessoryPressure)
+                        .monospacedDigit()
+                    Text("hPa")
+                        .font(AtmoWidgetDesign.Typography.accessoryUnit)
+                        .foregroundColor(.secondary)
+                }
+                .layoutPriority(1)
+
+                AtmoSparkline(
+                    pressures: entry.pressures,
+                    currentIndex: entry.currentIndex,
+                    lineColor: .primary,
+                    dotBackgroundColor: .clear
+                )
+                .widgetAccentable()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        }
+    }
+
+    @available(iOS 16.0, *)
+    private var accessoryCircularView: some View {
+        let pressureValue = Double(entry.currentPressure) ?? 1013.0
+        return Gauge(
+            value: pressureValue,
+            in: AtmoWidgetDesign.Metrics.pressureGaugeMin...AtmoWidgetDesign.Metrics.pressureGaugeMax
+        ) {
+            Text("気圧")
+        } currentValueLabel: {
+            VStack(spacing: 0) {
+                Text(entry.currentPressure)
+                    .font(AtmoWidgetDesign.Typography.accessoryCircularPressure)
+                    .monospacedDigit()
+                    .minimumScaleFactor(0.8)
+                HStack(spacing: 1) {
+                    Image(systemName: AtmoWidgetDesign.trendSymbol(for: entry.diff3h))
+                    Text(entry.diff3h)
+                }
+                .font(AtmoWidgetDesign.Typography.accessoryCircularDelta)
+                .lineLimit(1)
+            }
+        }
+        .gaugeStyle(.accessoryCircular)
+    }
+
+    @available(iOS 16.0, *)
+    private var accessoryInlineView: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "barometer")
+            Text("\(entry.locationName) \(entry.currentPressure)hPa")
+            Text("(\(entry.diff3h))")
+        }
+    }
+
+    @ViewBuilder
     private var fallbackView: some View {
+        if #available(iOS 16.0, *) {
+            switch family {
+            case .accessoryInline:
+                Text("ソラケア: データなし")
+            case .accessoryCircular:
+                Image(systemName: "barometer")
+            case .accessoryRectangular:
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("ソラケア")
+                        .font(AtmoWidgetDesign.Typography.accessoryTitle)
+                    Text("アプリを開いて更新")
+                        .font(AtmoWidgetDesign.Typography.accessoryUnit)
+                        .foregroundColor(.secondary)
+                }
+            default:
+                defaultFallbackView
+            }
+        } else {
+            defaultFallbackView
+        }
+    }
+
+    private var defaultFallbackView: some View {
         VStack(spacing: AtmoWidgetDesign.Spacing.section) {
             Image(systemName: "barometer")
                 .font(.system(
@@ -172,11 +276,34 @@ struct AtmoWidgetEntryView: View {
 }
 
 private struct AtmoWidgetBackgroundModifier: ViewModifier {
+    let family: WidgetFamily
+
     func body(content: Content) -> some View {
-        if #available(iOS 17.0, *) {
-            content.containerBackground(AtmoWidgetDesign.surface, for: .widget)
+        if isAccessoryFamily {
+            if #available(iOS 17.0, *) {
+                content.containerBackground(Color.clear, for: .widget)
+            } else {
+                content.background(Color.clear)
+            }
         } else {
-            content.background(AtmoWidgetDesign.surface)
+            if #available(iOS 17.0, *) {
+                content.containerBackground(AtmoWidgetDesign.surface, for: .widget)
+            } else {
+                content.background(AtmoWidgetDesign.surface)
+            }
+        }
+    }
+
+    private var isAccessoryFamily: Bool {
+        if #available(iOS 16.0, *) {
+            switch family {
+            case .accessoryRectangular, .accessoryCircular, .accessoryInline:
+                return true
+            default:
+                return false
+            }
+        } else {
+            return false
         }
     }
 }

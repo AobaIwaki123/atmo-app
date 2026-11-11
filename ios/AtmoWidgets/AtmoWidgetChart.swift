@@ -4,6 +4,7 @@ struct AtmoSparkline: View {
     let pressures: [Double]
     let currentIndex: Int
     let lineColor: Color
+    var dotBackgroundColor: Color = AtmoWidgetDesign.surface
 
     var body: some View {
         Canvas { context, size in
@@ -74,17 +75,19 @@ struct AtmoSparkline: View {
                         dash: AtmoWidgetDesign.Chart.guideDash
                     )
                 )
-                context.fill(
-                    Path(
-                        ellipseIn: CGRect(
-                            x: point.x - AtmoWidgetDesign.Chart.outerDotRadius,
-                            y: point.y - AtmoWidgetDesign.Chart.outerDotRadius,
-                            width: AtmoWidgetDesign.Chart.outerDotRadius * 2,
-                            height: AtmoWidgetDesign.Chart.outerDotRadius * 2
-                        )
-                    ),
-                    with: .color(AtmoWidgetDesign.surface)
-                )
+                if dotBackgroundColor != .clear {
+                    context.fill(
+                        Path(
+                            ellipseIn: CGRect(
+                                x: point.x - AtmoWidgetDesign.Chart.outerDotRadius,
+                                y: point.y - AtmoWidgetDesign.Chart.outerDotRadius,
+                                width: AtmoWidgetDesign.Chart.outerDotRadius * 2,
+                                height: AtmoWidgetDesign.Chart.outerDotRadius * 2
+                            )
+                        ),
+                        with: .color(dotBackgroundColor)
+                    )
+                }
                 context.fill(
                     Path(
                         ellipseIn: CGRect(

@@ -28,6 +28,8 @@ enum AtmoWidgetDesign {
         static let baseline: CGFloat = 3
         static let smallSpacer: CGFloat = 2
         static let mediumStack: CGFloat = 0
+        static let accessoryStack: CGFloat = 2
+        static let accessoryRectangularGap: CGFloat = 8
     }
 
     enum Metrics {
@@ -44,6 +46,8 @@ enum AtmoWidgetDesign {
         static let pressureMinimumScale: CGFloat = 0.65
         static let pressureMediumMinimumScale: CGFloat = 0.6
         static let fallbackIconSize: CGFloat = 24
+        static let pressureGaugeMin: Double = 970.0
+        static let pressureGaugeMax: Double = 1040.0
     }
 
     enum Chart {
@@ -69,6 +73,13 @@ enum AtmoWidgetDesign {
         static let unit = Font.system(size: 10, weight: .regular, design: .default)
         static let delta = Font.system(size: 11, weight: .semibold, design: .default)
         static let axis = Font.system(size: 10, weight: .regular, design: .default)
+        static let accessoryTitle = Font.system(size: 12, weight: .semibold, design: .default)
+        static let accessoryPressure = Font.system(size: 20, weight: .semibold, design: .default)
+        static let accessoryUnit = Font.system(size: 9, weight: .regular, design: .default)
+        static let accessoryDelta = Font.system(size: 11, weight: .medium, design: .default)
+        static let accessoryCircularPressure = Font.system(size: 15, weight: .bold, design: .default)
+        static let accessoryCircularDelta = Font.system(size: 9, weight: .semibold, design: .default)
+        static let accessoryInline = Font.system(size: 13, weight: .regular, design: .default)
     }
 
     static func statusColor(for status: String) -> Color {
@@ -76,6 +87,16 @@ enum AtmoWidgetDesign {
         case "caution": return caution
         case "notice": return notice
         default: return normal
+        }
+    }
+
+    static func trendSymbol(for diff: String) -> String {
+        if diff.hasPrefix("+") {
+            return "arrow.up.right"
+        } else if diff.hasPrefix("-") {
+            return "arrow.down.right"
+        } else {
+            return "arrow.forward"
         }
     }
 }
