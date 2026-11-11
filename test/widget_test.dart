@@ -72,6 +72,7 @@ void main() {
     await tester.tap(locationChip);
     await tester.pump(const Duration(milliseconds: 500));
     expect(find.text('地点を選択'), findsOneWidget);
+    expect(find.byType(DropdownButtonFormField<String?>), findsNothing);
 
     await tester.enterText(find.byType(TextField), '札幌');
     tester.testTextInput.hide();

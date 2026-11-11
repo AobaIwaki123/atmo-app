@@ -632,7 +632,6 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
 
   void _showLocationPicker(BuildContext context) {
     final searchController = TextEditingController();
-    String? prefectureFilter;
 
     showModalBottomSheet<void>(
       context: context,
@@ -644,10 +643,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
       builder: (sheetContext) {
         return StatefulBuilder(
           builder: (context, setModalState) {
-            final results = LocationCatalog.search(
-              searchController.text,
-              prefecture: prefectureFilter,
-            );
+            final results = LocationCatalog.search(searchController.text);
             final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
             return SafeArea(
@@ -682,36 +678,7 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
                         '都道府県の代表地点から気圧を表示します。',
                         style: TextStyle(fontSize: 12, color: Colors.white60),
                       ),
-                      const SizedBox(height: 14),
-                      DropdownButtonFormField<String?>(
-                        initialValue: prefectureFilter,
-                        decoration: InputDecoration(
-                          labelText: '都道府県',
-                          labelStyle: const TextStyle(color: Colors.white60),
-                          filled: true,
-                          fillColor: Colors.white.withValues(alpha: 0.06),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                        dropdownColor: const Color(0xFF1E293B),
-                        items: <DropdownMenuItem<String?>>[
-                          const DropdownMenuItem<String?>(
-                            value: null,
-                            child: Text('すべての都道府県'),
-                          ),
-                          ...LocationCatalog.all.map(
-                            (option) => DropdownMenuItem<String?>(
-                              value: option.prefecture,
-                              child: Text(option.prefecture),
-                            ),
-                          ),
-                        ],
-                        onChanged: (value) =>
-                            setModalState(() => prefectureFilter = value),
-                      ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 16),
                       TextField(
                         controller: searchController,
                         onChanged: (_) => setModalState(() {}),
