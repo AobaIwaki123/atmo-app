@@ -13,7 +13,7 @@ AppleのWidget HIGが示す「サイズごとに価値を持たせる」「小�
 1. この文書: 目的、情報階層、レイアウト規約、受け入れ条件
 2. `lib/widgets/widget_design_tokens.dart`: Flutter画像レンダラーのトークン実装
 3. `ios/AtmoWidgets/AtmoWidgetDesign.swift`: SwiftUIフォールバックのトークン実装
-4. `lib/widgets/atmo_small_widget_view.dart` / `atmo_medium_widget_view.dart`: Flutterのサイズ別構成
+4. `lib/widgets/atmo_small_widget_view.dart` / `atmo_medium_widget_view.dart` / `atmo_lock_widget_view.dart`: Flutterのサイズ別構成（Home小/中・Lock Screenプレビュー）
 5. `ios/AtmoWidgets/AtmoWidgetViews.swift`: SwiftUIフォールバックのサイズ別構成
 
 API、App Group、WidgetKitの更新タイミングはデザインファイルへ入れない。データと連携の責務は次のファイル群が持つ。
@@ -76,7 +76,7 @@ iOS 16+のロック画面ウィジェットは、モノクロ・透過・Vibranc
 
 #### accessoryInline（時計上1行テキスト）
 1. SF Symbol `barometer` + 地点名 + 現在気圧 + 3時間差
-   - 例: `東京 1013hPa ↘-2.4`
+   - 例: `東京 1013.0hPa (-2.4)`
 2. 省略されずに一目で状況が把握できる最小構成とする。
 
 ## トークン規約

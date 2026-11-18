@@ -67,6 +67,9 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
 
+    expect(find.text('ホーム画面ウィジェット (プレビュー)'), findsOneWidget);
+    expect(find.text('ロック画面ウィジェット (プレビュー)'), findsOneWidget);
+
     final locationChip = find.text('選択地点: 東京都（東京）');
     await tester.ensureVisible(locationChip);
     await tester.tap(locationChip);

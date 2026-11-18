@@ -6,16 +6,27 @@ import 'package:flutter/material.dart';
 import 'widget_content.dart';
 import 'widget_design_tokens.dart';
 
-/// Small/Mediumで共有する軽量グラフ。
+/// Small/Mediumおよびロック画面長方形ウィジェットで共有する軽量グラフ。
 class MiniPressureChart extends StatelessWidget {
   final WidgetChartData data;
+  final Color lineColor;
+  final Color dotBackgroundColor;
 
-  const MiniPressureChart({super.key, required this.data});
+  const MiniPressureChart({
+    super.key,
+    required this.data,
+    this.lineColor = WidgetColors.graph,
+    this.dotBackgroundColor = WidgetColors.surface,
+  });
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: MiniPressureChartPainter(data: data),
+      painter: MiniPressureChartPainter(
+        data: data,
+        lineColor: lineColor,
+        dotBackgroundColor: dotBackgroundColor,
+      ),
       child: const SizedBox.expand(),
     );
   }
@@ -24,10 +35,12 @@ class MiniPressureChart extends StatelessWidget {
 class MiniPressureChartPainter extends CustomPainter {
   final WidgetChartData data;
   final Color lineColor;
+  final Color dotBackgroundColor;
 
   MiniPressureChartPainter({
     required this.data,
     this.lineColor = WidgetColors.graph,
+    this.dotBackgroundColor = WidgetColors.surface,
   });
 
   @override
@@ -97,11 +110,13 @@ class MiniPressureChartPainter extends CustomPainter {
       guidePaint,
     );
 
-    canvas.drawCircle(
-      point,
-      WidgetChartMetrics.outerDotRadius,
-      Paint()..color = WidgetColors.surface,
-    );
+    if (dotBackgroundColor != Colors.transparent) {
+      canvas.drawCircle(
+        point,
+        WidgetChartMetrics.outerDotRadius,
+        Paint()..color = dotBackgroundColor,
+      );
+    }
     canvas.drawCircle(
       point,
       WidgetChartMetrics.innerDotRadius,
@@ -113,6 +128,7 @@ class MiniPressureChartPainter extends CustomPainter {
   bool shouldRepaint(covariant MiniPressureChartPainter oldDelegate) {
     return oldDelegate.data.currentIndex != data.currentIndex ||
         !listEquals(oldDelegate.data.pressures, data.pressures) ||
-        oldDelegate.lineColor != lineColor;
+        oldDelegate.lineColor != lineColor ||
+        oldDelegate.dotBackgroundColor != dotBackgroundColor;
   }
 }

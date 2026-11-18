@@ -8,9 +8,11 @@ import 'api/pressure_api.dart';
 import 'models/location_option.dart';
 import 'models/pressure_report.dart';
 import 'widgets/pressure_chart.dart';
+import 'widgets/atmo_lock_widget_view.dart';
 import 'widgets/atmo_medium_widget_view.dart';
 import 'widgets/atmo_small_widget_view.dart';
 import 'widgets/widget_content.dart';
+import 'widgets/widget_design_tokens.dart';
 import 'services/location_selection_store.dart';
 import 'services/widget_update_service.dart';
 
@@ -281,6 +283,10 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
 
                       // 【ホーム画面ウィジェット・プレビュー】
                       _buildWidgetPreviewSection(report),
+                      const SizedBox(height: 16),
+
+                      // 【ロック画面ウィジェット・プレビュー】
+                      _buildLockScreenWidgetPreviewSection(report),
                       const SizedBox(height: 36),
                     ],
                   ),
@@ -293,10 +299,11 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
     );
   }
 
-  /// ウィジェットプレビューセクション (Small: 158×158, Medium: 338×158)
-  Widget _buildWidgetPreviewSection(PressureReport report) {
-    final content = WidgetContent.fromReport(report);
-
+  Widget _buildPreviewCard({
+    required IconData icon,
+    required String title,
+    required Widget child,
+  }) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -312,16 +319,12 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: const [
-              Icon(
-                CupertinoIcons.square_grid_2x2,
-                size: 15,
-                color: Colors.white54,
-              ),
-              SizedBox(width: 8),
+            children: [
+              Icon(icon, size: 15, color: Colors.white54),
+              const SizedBox(width: 8),
               Text(
-                'ホーム画面ウィジェット (プレビュー)',
-                style: TextStyle(
+                title,
+                style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                   color: Colors.white70,
@@ -331,19 +334,90 @@ class _PressureMonitorPageState extends State<PressureMonitorPage> {
             ],
           ),
           const SizedBox(height: 16),
-          Center(
-            child: Wrap(
-              spacing: 16,
+          child,
+        ],
+      ),
+    );
+  }
+
+  /// ウィジェットプレビューセクション (Small: 158×158, Medium: 338×158)
+  Widget _buildWidgetPreviewSection(PressureReport report) {
+    final content = WidgetContent.fromReport(report);
+
+    return _buildPreviewCard(
+      icon: CupertinoIcons.square_grid_2x2,
+      title: 'ホーム画面ウィジェット (プレビュー)',
+      child: Center(
+        child: Wrap(
+          spacing: 16,
+          runSpacing: 16,
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            AtmoSmallWidgetView(content: content),
+            AtmoMediumWidgetView(content: content),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// ロック画面ウィジェットプレビューセクション (Inline / Circular / Rectangular)
+  Widget _buildLockScreenWidgetPreviewSection(PressureReport report) {
+    final content = WidgetContent.fromReport(report);
+
+    return _buildPreviewCard(
+      icon: CupertinoIcons.lock,
+      title: 'ロック画面ウィジェット (プレビュー)',
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(WidgetSpacing.accessoryPreviewPadding),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              WidgetColors.accessoryBackdropTop,
+              WidgetColors.accessoryBackdropBottom,
+            ],
+          ),
+          borderRadius: BorderRadius.circular(
+            WidgetMetrics.accessoryBackdropRadius,
+          ),
+          border: Border.all(color: WidgetColors.accessoryBackdropBorder),
+        ),
+        child: Column(
+          children: [
+            AtmoLockInlineWidgetView(content: content),
+            const SizedBox(height: WidgetSpacing.accessoryLabelGap),
+            const Text('インライン', style: WidgetTypography.accessoryCaption),
+            const SizedBox(height: WidgetSpacing.accessoryPreviewGap),
+            Wrap(
+              spacing: 20,
               runSpacing: 16,
               alignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                AtmoSmallWidgetView(content: content),
-                AtmoMediumWidgetView(content: content),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AtmoLockCircularWidgetView(content: content),
+                    const SizedBox(height: WidgetSpacing.accessoryLabelGap),
+                    const Text('円形', style: WidgetTypography.accessoryCaption),
+                  ],
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AtmoLockRectangularWidgetView(content: content),
+                    const SizedBox(height: WidgetSpacing.accessoryLabelGap),
+                    const Text('長方形', style: WidgetTypography.accessoryCaption),
+                  ],
+                ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
